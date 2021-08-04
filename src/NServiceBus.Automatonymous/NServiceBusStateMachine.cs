@@ -22,7 +22,7 @@ namespace NServiceBus.Automatonymous
         
         private void RegisterAllEventImplicit()
         {
-            var registerEvent = typeof(NServiceBusStateMachine<TState>).GetMethod(nameof(RegisterEvent))!;
+            var registerEvent = typeof(NServiceBusStateMachine<TState>).GetMethod(nameof(RegisterEvent), BindingFlags.Instance | BindingFlags.NonPublic)!;
             var type = GetType().GetTypeInfo();
             var properties = ConfigurationHelpers.GetStateMachineProperties(type);
 
@@ -83,7 +83,7 @@ namespace NServiceBus.Automatonymous
             Action<IEventCorrelationConfigurator<TState, T>>? configureEventCorrelation)
         {
             var correlateByProperty = GetDefaultCorrelationMessageByProperty<T>();
-            if (typeof(T).ClosesType(typeof(ICorrelatedBy)))
+            if (typeof(T).IsAssignableFrom(typeof(ICorrelatedBy)))
             {
                 correlateByProperty =
                     (Expression<Func<T, object>>) typeof(NServiceBusStateMachine<TState>).GetMethod(

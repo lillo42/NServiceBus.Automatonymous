@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -9,9 +10,8 @@ using NServiceBus.Sagas;
 
 namespace NServiceBus.Automatonymous
 {
-    public class NServiceBusSaga<TStateMachine, TState> : Saga<TState>,
-        IHandleSagaNotFound
-        where TStateMachine : NServiceBusStateMachine<TState>
+    public class NServiceBusSaga<TStateMachine, TState> : Saga<TState>, IHandleSagaNotFound
+        where TStateMachine : NServiceBusStateMachine<TState>, new()
         where TState : class, IContainSagaData, new()
     {
         // ReSharper disable once StaticMemberInGenericType
@@ -30,7 +30,7 @@ namespace NServiceBus.Automatonymous
         }
 
         private static readonly FieldInfo ConfigureHowToFindSagaWithMessage = typeof(SagaPropertyMapper<TState>)
-            .GetFields(BindingFlags.Instance | BindingFlags.Default)
+            .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Default)
             .First(x => x.FieldType == typeof(IConfigureHowToFindSagaWithMessage));
 
         private static readonly MethodInfo ConfigureMapping = typeof(IConfigureHowToFindSagaWithMessage)
@@ -39,7 +39,7 @@ namespace NServiceBus.Automatonymous
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<TState> mapper)
         {
             var configureHowToFindSagaWithMessage = ConfigureHowToFindSagaWithMessage.GetValue(mapper);
-            foreach (var correlation in StateMachine.Correlations.Where(x => x.CorrelateByProperty != null))
+            foreach (var correlation in new TStateMachine().Correlations.Where(x => x.CorrelateByProperty != null))
             {
                 var genericMethod = ConfigureMapping.MakeGenericMethod(typeof(TState), correlation.MessageType);
                 genericMethod.Invoke(configureHowToFindSagaWithMessage, new[] { correlation.HowToFindSagaWithMessage, correlation.CorrelateByProperty });

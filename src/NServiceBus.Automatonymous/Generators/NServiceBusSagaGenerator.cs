@@ -1,8 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
-using Automatonymous;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -46,10 +45,11 @@ namespace NServiceBus.Automatonymous.Generators
 
             public Parse(GeneratorExecutionContext executionContext)
             {
+                
                 _executionContext = executionContext;
-                _nServiceBusStateMachineContextSymbol = _executionContext.Compilation.GetTypeByMetadataName(typeof(NServiceBusStateMachine<>).FullName)!;
-                _eventSymbol = _executionContext.Compilation.GetTypeByMetadataName(typeof(Event<>).FullName)!;
-                _startSaga = _executionContext.Compilation.GetTypeByMetadataName(typeof(StartSagaAttribute).FullName)!;
+                _nServiceBusStateMachineContextSymbol = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.NServiceBusStateMachine`1")!;
+                _eventSymbol = _executionContext.Compilation.GetTypeByMetadataName("Automatonymous.Event`1")!;
+                _startSaga = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartSagaAttribute")!;
             }
 
             public ClassBuilder? GetGenerationSpec(ClassDeclarationSyntax classDeclarationSyntax)
@@ -87,7 +87,6 @@ namespace NServiceBus.Automatonymous.Generators
                     }
                 }
 
-
                 if (startByEvents.Count == 0 && events.Count == 0)
                 {
                     return null;
@@ -104,10 +103,10 @@ namespace NServiceBus.Automatonymous.Generators
                 
                 return new ClassBuilder()
                     .SetName($"{classDeclarationSyntax.Identifier.Text}NServiceBusSaga")
-                    .SetNamespace($"{typeof(AutomatonymousFeature).FullName}.Generated")
-                    .AddUsing(typeof(Task).Namespace)
+                    .SetNamespace($"NServiceBus.Automatonymous.Generated")
+                    .AddUsing("System.Threading.Tasks")
 
-                    .AddUsing(typeof(NServiceBusSaga<,>).Namespace)
+                    .AddUsing("NServiceBus.Automatonymous")
                     .AddUsing(state.ContainingNamespace.ToDisplayString())
                     .SetBaseType($"NServiceBusSaga<{classDeclarationSyntax.Identifier.Text}, {state.Name}>")
                     
@@ -116,12 +115,11 @@ namespace NServiceBus.Automatonymous.Generators
 {{
 }}")
 
-                    .AddUsing(typeof(IAmStartedByMessages<>).Namespace)
+                    .AddUsing("NServiceBus")
                     .AddUsing(startByEventsGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
                     .AddInterfaces(startByEventsGenericArgumentSymbol.Select(x => $"IAmStartedByMessages<{x!.Name}>"))
                     .AddMethods(startByEvents.Zip(startByEventsGenericArgumentSymbol, CreateHandler!))
-                        
-                    .AddUsing(typeof(IHandleMessages<>).Namespace)
+                    
                     .AddUsing(eventGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
                     .AddInterfaces(eventGenericArgumentSymbol.Select(x => $"IHandleMessages<{x!.Name}>"))
                     .AddMethods(events.Zip(eventGenericArgumentSymbol, CreateHandler!));
@@ -132,7 +130,14 @@ namespace NServiceBus.Automatonymous.Generators
                 foreach (var attributeSyntax in propertyDeclarationSyntax.DescendantNodes().OfType<AttributeSyntax>())
                 {
                     var symbolInfo = compilationSemanticModel.GetSymbolInfo(attributeSyntax);
-                    foreach (var candidateSymbol in symbolInfo.CandidateSymbols.OfType<IMethodSymbol>())
+
+                    if (symbolInfo.Symbol is IMethodSymbol methodSymbol 
+                        && methodSymbol.ContainingType.Equals(_startSaga, SymbolEqualityComparer.Default))
+                    { 
+                        return true;
+                    }
+
+                    foreach (var candidateSymbol in symbolInfo.CandidateSymbols)
                     {
                         if (candidateSymbol.ContainingType.Equals(_startSaga, SymbolEqualityComparer.Default))
                         {
@@ -173,7 +178,7 @@ namespace NServiceBus.Automatonymous.Generators
                 return false;
             }
             
-            private static bool DerivesFrom(SyntaxNode? expression, ISymbol extendedSymbol, SemanticModel compilationSemanticModel, bool checkCandidates = false)
+            private static bool DerivesFrom(SyntaxNode? expression, ISymbol extendedSymbol, SemanticModel compilationSemanticModel)
             {
                 if (expression == null)
                 {

@@ -9,7 +9,7 @@ namespace NServiceBus.Automatonymous.Tests
         [Fact]
         public async Task A()
         {
-            await GenerateMapperAsync(await File.ReadAllTextAsync("/Users/rlillo/Documents/github/NServiceBus.Automatonymous/tests/NServiceBus.Automatonymous.Tests/OrderStateMachine.cs"));
+            await GenerateMapperAsync(await File.ReadAllTextAsync("../../../OrderStateMachine.cs"));
         }
     }
 }

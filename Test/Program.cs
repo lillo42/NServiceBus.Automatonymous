@@ -6,6 +6,7 @@ using GreenPipes.Introspection;
 using NServiceBus;
 using NServiceBus.Automatonymous;
 using NServiceBus.Automatonymous.Tests;
+using NServiceBus.Features;
 
 namespace Test
 {
@@ -17,7 +18,7 @@ namespace Test
 
             var endpointConfiguration = new EndpointConfiguration("Samples.SimpleSaga");
             
-            // endpointConfiguration.EnableFeature<AutomatonymousFeature>();
+            endpointConfiguration.EnableFeature<AutomatonymousFeature>();
             endpointConfiguration.UsePersistence<LearningPersistence>();
             endpointConfiguration.UseTransport<LearningTransport>();
 

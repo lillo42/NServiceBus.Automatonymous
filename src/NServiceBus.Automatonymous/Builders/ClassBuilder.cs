@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -71,8 +72,6 @@ namespace NServiceBus.Automatonymous.Builders
             return this;
         }
         
-
-        private const string Tab = "    ";
         public string Build()
         {
             var sb = new StringBuilder();
@@ -80,23 +79,26 @@ namespace NServiceBus.Automatonymous.Builders
             {
                 sb.AppendLine($"using {@using};");
             }
-            
-            
-            sb.AppendLine($"namespace {_namespace}");
-            sb.AppendLine("{");
 
-            sb.AppendLine($"public class {_name} : {_baseType}, {string.Join(',',_interfaces)}")
-                .AppendLine("{");
+            sb.AppendLine($"namespace {_namespace}");
+            sb.Append("{");
+
+            sb.Append(IndentSource($"{Environment.NewLine}public class {_name} : {_baseType}, {string.Join(", ",_interfaces)}{Environment.NewLine}{{", 1));
             
             foreach (var method in _methods)
             {
-                sb.AppendLine(method);
+                sb.Append(IndentSource($"{Environment.NewLine}{method}", 2));
             }
             
-            sb.AppendLine("}");
+            sb.AppendLine(IndentSource($"{Environment.NewLine}}}", 1));
             sb.AppendLine("}");
 
             return sb.ToString();
+        }
+        
+        private static string IndentSource(string source, int numIndentations)
+        {
+            return source.Replace(Environment.NewLine, $"{Environment.NewLine}{new string(' ', 4 * numIndentations)}"); // 4 spaces per indentation.
         }
     }
 }
