@@ -4,16 +4,16 @@ using System.Text;
 
 namespace NServiceBus.Automatonymous.Builders
 {
-    public class ClassBuilder
+    internal class NServiceBusSagaClassBuilder
     {
         private readonly HashSet<string> _using = new HashSet<string>();
-        public ClassBuilder AddUsing(string @namespace)
+        public NServiceBusSagaClassBuilder AddUsing(string @namespace)
         {
             _using.Add(@namespace);
             return this;
         }
         
-        public ClassBuilder AddUsing(IEnumerable<string>  namespaces)
+        public NServiceBusSagaClassBuilder AddUsing(IEnumerable<string>  namespaces)
         {
             foreach (var @namespace in namespaces)
             {
@@ -25,7 +25,7 @@ namespace NServiceBus.Automatonymous.Builders
 
         private string? _namespace;
 
-        public ClassBuilder SetNamespace(string @namespace)
+        public NServiceBusSagaClassBuilder SetNamespace(string @namespace)
         {
             _namespace = @namespace;
             return this;
@@ -34,21 +34,21 @@ namespace NServiceBus.Automatonymous.Builders
         public string Name => _name ?? string.Empty;
         
         private string? _name;
-        public ClassBuilder SetName(string name)
+        public NServiceBusSagaClassBuilder SetName(string name)
         {
             _name = name;
             return this;
         }
 
         private string? _baseType;
-        public ClassBuilder SetBaseType(string @baseTye)
+        public NServiceBusSagaClassBuilder SetBaseType(string @baseTye)
         {
             _baseType = baseTye;
             return this;
         }
         
         private readonly HashSet<string> _interfaces = new HashSet<string>();
-        public ClassBuilder AddInterfaces(IEnumerable<string> interfaces)
+        public NServiceBusSagaClassBuilder AddInterfaces(IEnumerable<string> interfaces)
         {
             foreach (var @interface in interfaces)
             {
@@ -60,13 +60,13 @@ namespace NServiceBus.Automatonymous.Builders
 
         private readonly List<string> _methods = new List<string>();
 
-        public ClassBuilder AddMethods(IEnumerable<string> methods)
+        public NServiceBusSagaClassBuilder AddMethods(IEnumerable<string> methods)
         {
             _methods.AddRange(methods);
             return this;
         }
         
-        public ClassBuilder AddMethod(string method)
+        public NServiceBusSagaClassBuilder AddMethod(string method)
         {
             _methods.Add(method);
             return this;

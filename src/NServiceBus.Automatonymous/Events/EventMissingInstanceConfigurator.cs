@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using NServiceBus.Automatonymous.Exceptions;
 
 namespace NServiceBus.Automatonymous.Events
 {
@@ -14,7 +15,15 @@ namespace NServiceBus.Automatonymous.Events
 
         public void Fault()
         {
-            _action = (message, context) => Task.CompletedTask;
+            _action = (message, context) =>
+            {
+                if (string.IsNullOrEmpty(AutomatonymousFeature.DeadQueue))
+                {
+                    throw new DeadQueueNotSetupException();
+                }
+                
+                return context.ForwardCurrentMessageTo(AutomatonymousFeature.DeadQueue);
+            };
         }
 
         public void ExecuteAsync(Func<TMessage, IMessageProcessingContext, Task> action)

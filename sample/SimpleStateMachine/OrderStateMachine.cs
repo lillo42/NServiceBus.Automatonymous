@@ -2,33 +2,20 @@ using System;
 using System.Linq.Expressions;
 using Automatonymous;
 using GreenPipes;
+using NServiceBus;
+using NServiceBus.Automatonymous;
 using NServiceBus.Logging;
 
-namespace NServiceBus.Automatonymous.Tests
+namespace SimpleStateMachine
 {
-    public class CancelOrder : IMessage { }
-    
-    public class CompleteOrder : IMessage
-    {
-        public Guid OrderId { get; set; }
-    }
-    
-    public class StartOrder : IMessage
-    {
-        public Guid OrderId { get; set; }
-    }
-    
-    public class OrderState : ContainSagaData
-    {
-        public string CurrentState { get; set; }
-        public Guid OrderId { get; set; }
-    }
-    
     public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
     {
+
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
+
+            Event(() => CompleteOrder);
 
             Initially(When(SubmitOrder)
                 .Then(context =>
@@ -37,7 +24,7 @@ namespace NServiceBus.Automatonymous.Tests
                     log.Info($"StartOrder received with OrderId {context.Data.OrderId}");
                     log.Info("Sending a CompleteOrder that will be delayed by 10 seconds");
                 })
-                .SendAsync(context => new CompleteOrder { OrderId = context.Instance.Id },
+                .SendAsync(context => new CompleteOrder { OrderId = context.Instance.OrderId },
                     (_, opt) =>
                     {
                         opt.DelayDeliveryWith(TimeSpan.FromSeconds(10));
@@ -54,30 +41,13 @@ namespace NServiceBus.Automatonymous.Tests
             DuringAny(When(CancelOrder)
                 .Then(context => context.GetPayload<ILog>().Info($"CompleteOrder not received soon enough OrderId {context.Instance.OrderId}. Calling MarkAsComplete"))
                 .Finalize());
-
-            DoSomething();
-            DoSomething2();
-            
-            void DoSomething2() 
-            {
-                Initially(When(SubmitOrder), When(CancelOrder));
-            }
-        }
-        
-        private void DoSomething()
-        {
-            Initially(When(SubmitOrder), When(CancelOrder));
-            
-            During(OrderStarted, When(CompleteOrder)
-                .Then(context => context.GetPayload<ILog>().Info($"CompleteOrder received with OrderId {context.Data.OrderId}"))
-                .Finalize());
-
         }
 
         public override Expression<Func<OrderState, object>> CorrelationByProperty() => x => x.OrderId;
         protected override string DefaultCorrelationMessageByPropertyName => "OrderId";
-
+        
         public State OrderStarted { get; private set; } = null!;
+        
         
         [StartSaga]
         public Event<StartOrder> SubmitOrder { get; private set; } = null!;

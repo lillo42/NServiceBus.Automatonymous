@@ -4,8 +4,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Automatonymous;
-using Automatonymous.Contexts;
+using GreenPipes.Payloads;
 using NServiceBus.Logging;
+using NServiceBus.ObjectBuilder;
 using NServiceBus.Sagas;
 
 namespace NServiceBus.Automatonymous
@@ -16,11 +17,12 @@ namespace NServiceBus.Automatonymous
     {
         // ReSharper disable once StaticMemberInGenericType
         private static ILog? _log;
-        protected TStateMachine StateMachine { get; private set; }
-
-        protected NServiceBusSaga(TStateMachine stateMachine)
+        protected TStateMachine StateMachine { get; }
+        private readonly IBuilder _builder;
+        protected NServiceBusSaga(TStateMachine stateMachine, IBuilder builder)
         {
             StateMachine = stateMachine;
+            _builder = builder;
             InitiallyLog();
         }
 
@@ -48,7 +50,7 @@ namespace NServiceBus.Automatonymous
         
         protected async Task Execute<T>(T message, IMessageHandlerContext context, Event<T> @event)
         {
-            var eventContext = new StateMachineEventContext<TState, T>(StateMachine, Data, @event, message, CancellationToken.None);
+            var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, new BuilderPayloadCache(_builder, new ListPayloadCache()), CancellationToken.None);
             eventContext.GetOrAddPayload(() => context);
             eventContext.GetOrAddPayload(() => _log);
             eventContext.GetOrAddPayload(GetType);

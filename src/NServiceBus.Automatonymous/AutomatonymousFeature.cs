@@ -5,6 +5,7 @@ using Automatonymous;
 using NServiceBus.Automatonymous.Generators;
 using NServiceBus.Features;
 using NServiceBus.ObjectBuilder;
+using NServiceBus.ObjectBuilder.Common;
 using NServiceBus.Sagas;
 using NServiceBus.Transport;
 
@@ -15,6 +16,7 @@ namespace NServiceBus.Automatonymous
         public AutomatonymousFeature()
         {
             EnableByDefault();
+            
             Prerequisite(config => config.Settings.GetAvailableTypes().Any(IsNServiceBusStateMachine), "No state machine were found in the scanned types");
         }
         
@@ -28,8 +30,18 @@ namespace NServiceBus.Automatonymous
         {
             foreach (var stateMachineType in context.Settings.GetAvailableTypes().Where(IsNServiceBusStateMachine))
             {
-                context.Container.RegisterSingleton(stateMachineType);
+                context.Container.RegisterSingleton(stateMachineType, Activator.CreateInstance(stateMachineType));
             }
+
+            if (context.Settings.TryGet<string>(ErrorQueueSettings.SettingsKey, out var deadQueue))
+            {
+                DeadQueue = deadQueue;
+            }
+
+            Container = context.Container;
         }
+
+        internal static string DeadQueue { get; private set; } = string.Empty;
+        internal static IConfigureComponents Container { get; private set; } = null!;
     }
 }

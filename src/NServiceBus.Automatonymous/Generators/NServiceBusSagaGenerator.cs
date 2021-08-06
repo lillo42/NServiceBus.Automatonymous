@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace NServiceBus.Automatonymous.Generators
                 _startSaga = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartSagaAttribute")!;
             }
 
-            public ClassBuilder? GetGenerationSpec(ClassDeclarationSyntax classDeclarationSyntax)
+            public NServiceBusSagaClassBuilder? GetGenerationSpec(ClassDeclarationSyntax classDeclarationSyntax)
             {
                 var compilation = _executionContext.Compilation;
                 var compilationUnitSyntax = classDeclarationSyntax.FirstAncestorOrSelf<CompilationUnitSyntax>()!;
@@ -101,17 +100,18 @@ namespace NServiceBus.Automatonymous.Generators
                     .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
                     .ToList();
                 
-                return new ClassBuilder()
+                return new NServiceBusSagaClassBuilder()
                     .SetName($"{classDeclarationSyntax.Identifier.Text}NServiceBusSaga")
-                    .SetNamespace($"NServiceBus.Automatonymous.Generated")
+                    .SetNamespace("NServiceBus.Automatonymous.Generated")
                     .AddUsing("System.Threading.Tasks")
 
                     .AddUsing("NServiceBus.Automatonymous")
+                    .AddUsing("NServiceBus.ObjectBuilder")
                     .AddUsing(state.ContainingNamespace.ToDisplayString())
                     .SetBaseType($"NServiceBusSaga<{classDeclarationSyntax.Identifier.Text}, {state.Name}>")
                     
-                    .AddMethod($@"public {classDeclarationSyntax.Identifier.Text}NServiceBusSaga({classDeclarationSyntax.Identifier.Text} stateMachine)
-  : base(stateMachine)
+                    .AddMethod($@"public {classDeclarationSyntax.Identifier.Text}NServiceBusSaga({classDeclarationSyntax.Identifier.Text} stateMachine, IBuilder builder)
+  : base(stateMachine, builder)
 {{
 }}")
 

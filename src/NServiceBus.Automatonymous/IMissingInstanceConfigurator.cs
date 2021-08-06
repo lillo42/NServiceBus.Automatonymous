@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace NServiceBus.Automatonymous
 {
-    public interface IMissingInstanceConfigurator<TState, TMessage>
+    public interface IMissingInstanceConfigurator<TState, out TMessage>
         where TState :  IContainSagaData
     {
         void Discard();
