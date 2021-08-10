@@ -62,5 +62,11 @@ namespace Automatonymous
                 opt.SetHeader(Headers.SagaType, context.GetPayload<Type>().AssemblyQualifiedName);
             });
         } 
+        
+        public static EventActivityBinder<TInstance, TMessage> RequestTimeout<TInstance, TMessage, TRequestMessage>(
+            this EventActivityBinder<TInstance, TMessage> binder, DateTime at)
+            where TInstance : class, IContainSagaData
+            where TRequestMessage : new() 
+            => binder.RequestTimeout(_ => new TRequestMessage(), at);
     }
 }

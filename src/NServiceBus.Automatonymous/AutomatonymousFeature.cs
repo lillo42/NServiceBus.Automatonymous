@@ -41,7 +41,7 @@ namespace NServiceBus.Automatonymous
             Container = context.Container;
         }
 
-        internal static string DeadQueue { get; private set; } = string.Empty;
+        internal static string DeadQueue { get; set; } = string.Empty;
         internal static IConfigureComponents Container { get; private set; } = null!;
     }
 }

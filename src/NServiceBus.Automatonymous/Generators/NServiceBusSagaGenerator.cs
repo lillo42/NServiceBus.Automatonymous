@@ -150,7 +150,7 @@ namespace NServiceBus.Automatonymous.Generators
             }
 
             private static string CreateHandler(PropertyDeclarationSyntax propertyDeclarationSyntax, ISymbol symbol)
-                => $@"public Task Handle({symbol!.Name} message, IMessageHandlerContext context)
+                => $@"public Task Handle({symbol.Name} message, IMessageHandlerContext context)
 {{
     return Execute(message, context, StateMachine.{propertyDeclarationSyntax.Identifier.Text});
 }}";
@@ -192,12 +192,7 @@ namespace NServiceBus.Automatonymous.Generators
             private static ISymbol? GetGenericParameterSymbol(PropertyDeclarationSyntax propertyDeclarationSyntax, SemanticModel compilationSemanticModel)
             {
                 var genericNameSyntax =  propertyDeclarationSyntax.DescendantNodes().OfType<GenericNameSyntax>().FirstOrDefault();
-                if (genericNameSyntax == null)
-                {
-                    return null;
-                }
-
-                return compilationSemanticModel.GetSymbolInfo(genericNameSyntax.TypeArgumentList.Arguments[0]).Symbol;
+                return genericNameSyntax == null ? null : compilationSemanticModel.GetSymbolInfo(genericNameSyntax.TypeArgumentList.Arguments[0]).Symbol;
             }
         }
     }

@@ -20,32 +20,33 @@ namespace Test
         }
     }
     
-    // public class OrderState : SagaStateMachineInstance
-    // {
-    //     public Guid CorrelationId { get; set; }
-    //     public string CurrentState { get; set; }
-    // }
-    //
-    // public class SubmitOrder
-    // {
-    //     public Guid OrderId { get; set; }
-    // }
-    //
-    // public sealed class Order2StateMachine : MassTransitStateMachine<OrderState>
-    // {
-    //     public Order2StateMachine()
-    //     {
-    //         Event(() => SubmitOrder,
-    //             x =>
-    //             {
-    //                 x.CorrelateById(y => y.Message.OrderId);
-    //             });
-    //         InstanceState(x => x.CurrentState);
-    //         Event(() => SubmitOrder);
-    //         
-    //         Initially(When(SubmitOrder));
-    //     }
-    //     
-    //     public Event<SubmitOrder> SubmitOrder { get; private set; }
-    // }
+    public class OrderState : SagaStateMachineInstance
+    {
+        public Guid CorrelationId { get; set; }
+        public string CurrentState { get; set; }
+    }
+    
+    public class SubmitOrder
+    {
+        public Guid OrderId { get; set; }
+    }
+    
+    public sealed class Order2StateMachine : MassTransitStateMachine<OrderState>
+    {
+        public Order2StateMachine()
+        {
+            Event(() => SubmitOrder,
+                x =>
+                {
+                    x.CorrelateById(y => y.Message.OrderId);
+                    x.CorrelateBy((state, context) => state.CorrelationId == context.ConversationId);
+                });
+            InstanceState(x => x.CurrentState);
+            Event(() => SubmitOrder);
+            
+            Initially(When(SubmitOrder));
+        }
+        
+        public Event<SubmitOrder> SubmitOrder { get; private set; }
+    }
 }

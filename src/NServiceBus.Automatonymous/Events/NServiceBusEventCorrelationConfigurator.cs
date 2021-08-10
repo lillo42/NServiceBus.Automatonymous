@@ -23,7 +23,7 @@ namespace NServiceBus.Automatonymous.Events
         }
 
         private Expression<Func<TState, object>> _howToFindSagaWithMessage;
-        public IEventCorrelationConfigurator<TState, TMessage> HowToFindSagaWithMessage(Expression<Func<TState, object>> propertyExpression)
+        public IEventCorrelationConfigurator<TState, TMessage> HowToFindSagaData(Expression<Func<TState, object>> propertyExpression)
         {
             _howToFindSagaWithMessage = propertyExpression;
             return this;
