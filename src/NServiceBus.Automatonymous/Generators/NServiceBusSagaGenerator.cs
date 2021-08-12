@@ -40,7 +40,7 @@ namespace NServiceBus.Automatonymous.Generators
             private readonly GeneratorExecutionContext _executionContext;
             private readonly INamedTypeSymbol _nServiceBusStateMachineContextSymbol;
             private readonly INamedTypeSymbol _eventSymbol;
-            private readonly INamedTypeSymbol _startSaga;
+            private readonly INamedTypeSymbol _startStateMachine;
 
             public Parse(GeneratorExecutionContext executionContext)
             {
@@ -48,7 +48,7 @@ namespace NServiceBus.Automatonymous.Generators
                 _executionContext = executionContext;
                 _nServiceBusStateMachineContextSymbol = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.NServiceBusStateMachine`1")!;
                 _eventSymbol = _executionContext.Compilation.GetTypeByMetadataName("Automatonymous.Event`1")!;
-                _startSaga = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartSagaAttribute")!;
+                _startStateMachine = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartStateMachineAttribute")!;
             }
 
             public NServiceBusSagaClassBuilder? GetGenerationSpec(ClassDeclarationSyntax classDeclarationSyntax)
@@ -132,14 +132,14 @@ namespace NServiceBus.Automatonymous.Generators
                     var symbolInfo = compilationSemanticModel.GetSymbolInfo(attributeSyntax);
 
                     if (symbolInfo.Symbol is IMethodSymbol methodSymbol 
-                        && methodSymbol.ContainingType.Equals(_startSaga, SymbolEqualityComparer.Default))
+                        && methodSymbol.ContainingType.Equals(_startStateMachine, SymbolEqualityComparer.Default))
                     { 
                         return true;
                     }
 
                     foreach (var candidateSymbol in symbolInfo.CandidateSymbols)
                     {
-                        if (candidateSymbol.ContainingType.Equals(_startSaga, SymbolEqualityComparer.Default))
+                        if (candidateSymbol.ContainingType.Equals(_startStateMachine, SymbolEqualityComparer.Default))
                         {
                             return true;
                         }

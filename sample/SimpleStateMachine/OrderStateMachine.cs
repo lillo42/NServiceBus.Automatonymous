@@ -49,7 +49,7 @@ namespace SimpleStateMachine
         public State OrderStarted { get; private set; } = null!;
         
         
-        [StartSaga]
+        [StartStateMachine]
         public Event<StartOrder> SubmitOrder { get; private set; } = null!;
         
         public Event<CancelOrder> CancelOrder { get; private set; } = null!;
