@@ -26,7 +26,7 @@ namespace NServiceBus.Automatonymous.Activities
         public SendActivity(Func<BehaviorContext<TInstance>, TMessage> messageFactory, 
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions)
         {
-            _messageFactory = messageFactory;
+            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
             _configureOptions = configureOptions;
         }
 
@@ -38,7 +38,7 @@ namespace NServiceBus.Automatonymous.Activities
         public SendActivity(Func<BehaviorContext<TInstance>, Task<TMessage>> asyncMessageFactory, 
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions)
         {
-            _asyncMessageFactory = asyncMessageFactory;
+            _asyncMessageFactory = asyncMessageFactory ?? throw new ArgumentNullException(nameof(asyncMessageFactory));
             _configureOptions = configureOptions;
         }
 
@@ -104,7 +104,7 @@ namespace NServiceBus.Automatonymous.Activities
         public SendActivity(Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory, 
             Action<BehaviorContext<TInstance, TData>, SendOptions>? configureOptions)
         {
-            _messageFactory = messageFactory;
+            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
             _configureOptions = configureOptions;
         }
         
@@ -116,7 +116,7 @@ namespace NServiceBus.Automatonymous.Activities
         public SendActivity(Func<BehaviorContext<TInstance, TData>, Task<TMessage>> asyncMessageFactory, 
             Action<BehaviorContext<TInstance, TData>, SendOptions>? configureOptions)
         {
-            _asyncMessageFactory = asyncMessageFactory;
+            _asyncMessageFactory = asyncMessageFactory ?? throw new ArgumentNullException(nameof(asyncMessageFactory));
             _configureOptions = configureOptions;
         }
 
@@ -127,7 +127,8 @@ namespace NServiceBus.Automatonymous.Activities
         public void Accept(StateMachineVisitor visitor) => visitor.Visit(this);
         
         /// <inheritdoc />
-        public Task Faulted<TException>(BehaviorExceptionContext<TInstance, TData, TException> context, Behavior<TInstance, TData> next) where TException : Exception 
+        public Task Faulted<TException>(BehaviorExceptionContext<TInstance, TData, TException> context, Behavior<TInstance, TData> next) 
+            where TException : Exception 
             => next.Faulted(context);
 
         /// <inheritdoc />

@@ -29,8 +29,4 @@
     <ProjectReference Include="..\..\src\NServiceBus.Automatonymous\NServiceBus.Automatonymous.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Activities" />
-  </ItemGroup>
-
 </Project>
