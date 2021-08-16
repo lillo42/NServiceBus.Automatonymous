@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace NServiceBus.Automatonymous.Tests
+namespace NServiceBus.Automatonymous.Tests.Generators
 {
     public class NServiceBusSagaGenerator : BaseTest
     {

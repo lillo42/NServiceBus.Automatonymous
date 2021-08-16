@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Automatonymous;
-using GreenPipes.Introspection;
-using NServiceBus;
-using NServiceBus.Automatonymous;
-using NServiceBus.Automatonymous.Tests;
-using NServiceBus.Features;
 
 namespace Test
 {
@@ -44,7 +38,9 @@ namespace Test
             InstanceState(x => x.CurrentState);
             Event(() => SubmitOrder);
             
-            Initially(When(SubmitOrder));
+            // Initially(When(SubmitOrder)
+            //     .Send()
+            // );
         }
         
         public Event<SubmitOrder> SubmitOrder { get; private set; }

@@ -1,8 +1,6 @@
 using System;
 using System.Linq.Expressions;
 using Automatonymous;
-using GreenPipes;
-using NServiceBus;
 using NServiceBus.Automatonymous;
 using Trashlantis.Contracts;
 

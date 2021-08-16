@@ -10,9 +10,4 @@
       <PackageReference Include="MassTransit" Version="7.2.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\src\NServiceBus.Automatonymous\NServiceBus.Automatonymous.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-      <ProjectReference Include="..\tests\NServiceBus.Automatonymous.Tests\NServiceBus.Automatonymous.Tests.csproj" />
-    </ItemGroup>
-
 </Project>

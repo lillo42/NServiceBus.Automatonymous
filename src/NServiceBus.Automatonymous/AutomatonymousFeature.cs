@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Automatonymous;
-using NServiceBus.Automatonymous.Generators;
 using NServiceBus.Features;
 using NServiceBus.ObjectBuilder;
-using NServiceBus.ObjectBuilder.Common;
-using NServiceBus.Sagas;
-using NServiceBus.Transport;
 
 namespace NServiceBus.Automatonymous
 {
@@ -16,7 +11,6 @@ namespace NServiceBus.Automatonymous
         public AutomatonymousFeature()
         {
             EnableByDefault();
-            
             Prerequisite(config => config.Settings.GetAvailableTypes().Any(IsNServiceBusStateMachine), "No state machine were found in the scanned types");
         }
         

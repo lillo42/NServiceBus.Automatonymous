@@ -6,9 +6,8 @@ using Automatonymous;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.DependencyModel;
-using NServiceBus.Automatonymous.Generators;
 
-namespace NServiceBus.Automatonymous.Tests
+namespace NServiceBus.Automatonymous.Tests.Generators
 {
     public abstract class BaseTest
     {
@@ -32,7 +31,7 @@ namespace NServiceBus.Automatonymous.Tests
                 .AddSyntaxTrees(syntaxTrees)
                 .AddSyntaxTrees(node);
             
-            var driver = CSharpGeneratorDriver.Create(new Generators.NServiceBusSagaGenerator());
+            var driver = CSharpGeneratorDriver.Create(new Automatonymous.Generators.NServiceBusSagaGenerator());
             return driver.RunGenerators(compilation);
         }
 

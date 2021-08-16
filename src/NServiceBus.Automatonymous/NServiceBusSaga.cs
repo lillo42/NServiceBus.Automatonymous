@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -50,7 +49,8 @@ namespace NServiceBus.Automatonymous
         
         protected async Task Execute<T>(T message, IMessageHandlerContext context, Event<T> @event)
         {
-            var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, new BuilderPayloadCache(_builder, new ListPayloadCache()), CancellationToken.None);
+            var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, 
+                new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()), CancellationToken.None);
             eventContext.GetOrAddPayload(() => context);
             eventContext.GetOrAddPayload(() => _log);
             eventContext.GetOrAddPayload(GetType);

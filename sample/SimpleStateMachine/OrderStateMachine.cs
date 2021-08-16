@@ -10,7 +10,6 @@ namespace SimpleStateMachine
 {
     public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
     {
-
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
@@ -24,7 +23,7 @@ namespace SimpleStateMachine
                     log.Info($"StartOrder received with OrderId {context.Data.OrderId}");
                     log.Info("Sending a CompleteOrder that will be delayed by 10 seconds");
                 })
-                .SendAsync(context => new CompleteOrder { OrderId = context.Instance.OrderId },
+                .Send(context => new CompleteOrder { OrderId = context.Instance.OrderId },
                     (_, opt) =>
                     {
                         opt.DelayDeliveryWith(TimeSpan.FromSeconds(10));
