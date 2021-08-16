@@ -121,7 +121,7 @@ namespace NServiceBus.Automatonymous.Activities
         }
 
         /// <inheritdoc />
-        public void Probe(ProbeContext context) => context.CreateScope("send");
+        public void Probe(ProbeContext context) => context.CreateScope("publish");
 
         /// <inheritdoc />
         public void Accept(StateMachineVisitor visitor) => visitor.Visit(this);
