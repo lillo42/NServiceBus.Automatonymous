@@ -24,12 +24,12 @@ namespace Trashlantis.StateMachines
                     x.Instance.BinNumber = x.Data.BinNumber;
                     x.Instance.RequestTimestamp = DateTime.UtcNow;
                 })
-                .PublishAsync(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber })
+                .Publish(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber })
                 .TransitionTo(Requested)
             );
             
             During(Requested, When(TrashRemovalRequested)
-                .PublishAsync(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber }));
+                .Publish(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber }));
         }
 
         public override Expression<Func<TrashRemovalState, object>> CorrelationByProperty() => x => x.BinNumber;
