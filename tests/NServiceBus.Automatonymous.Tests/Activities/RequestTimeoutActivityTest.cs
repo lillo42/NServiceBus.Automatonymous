@@ -35,7 +35,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public void Probe_Should_CreateScope()
         {
-            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var context = Substitute.For<ProbeContext>();
             
@@ -47,7 +47,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public void Accept_Should_Visit()
         {
-            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var visitor = Substitute.For<StateMachineVisitor>();
             
@@ -59,7 +59,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public async Task Faulted_Should_Faulted()
         {
-            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var context = Substitute.For<BehaviorExceptionContext<OrderState, Exception>>();
             var next = Substitute.For<Behavior<OrderState>>();
@@ -72,7 +72,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public async Task FaultedGeneric_Should_Faulted()
         {
-            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var context = Substitute.For<BehaviorExceptionContext<OrderState, PayOrder, Exception>>();
             var next = Substitute.For<Behavior<OrderState, PayOrder>>();
@@ -110,7 +110,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             context.Instance.Returns(orderState);
             
 
-            var timeout = fixture.Create<DateTime>();
+            var timeout = DateTime.UtcNow;
             var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => message, timeout);
             await activity.Execute(context, next);
             await messageHandlerContext.Received(1).Send(message, Arg.Is<SendOptions>(opt => 
@@ -186,7 +186,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             context.Instance.Returns(orderState);
             
 
-            var timeout = fixture.Create<DateTime>();
+            var timeout = DateTime.UtcNow;
             var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => Task.FromResult(message), timeout);
             await activity.Execute(context, next);
             await messageHandlerContext.Received(1).Send(message, Arg.Is<SendOptions>(opt => 
@@ -262,7 +262,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             context.Instance.Returns(orderState);
             
 
-            var timeout = fixture.Create<DateTime>();
+            var timeout = DateTime.UtcNow;
             var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => message, timeout);
             await activity.Execute(context, next);
             await messageHandlerContext.Received(1).Send(message, Arg.Is<SendOptions>(opt => 
@@ -338,7 +338,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             context.Instance.Returns(orderState);
             
 
-            var timeout = fixture.Create<DateTime>();
+            var timeout = DateTime.UtcNow;
             var activity = new RequestTimeoutActivity<OrderState, SubmitOrder>(_ => Task.FromResult(message), timeout);
             await activity.Execute(context, next);
             await messageHandlerContext.Received(1).Send(message, Arg.Is<SendOptions>(opt => 
@@ -427,7 +427,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public void Probe_Should_CreateScope()
         {
-            var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var context = Substitute.For<ProbeContext>();
             
@@ -439,7 +439,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public void Accept_Should_Visit()
         {
-            var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var visitor = Substitute.For<StateMachineVisitor>();
             
@@ -451,7 +451,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
         [Fact]
         public async Task Faulted_Should_Faulted()
         {
-            var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => new SubmitOrder(), DateTime.Now);
+            var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => new SubmitOrder(), DateTime.UtcNow);
             
             var context = Substitute.For<BehaviorExceptionContext<OrderState, PayOrder, Exception>>();
             var next = Substitute.For<Behavior<OrderState, PayOrder>>();
@@ -489,7 +489,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             context.Instance.Returns(orderState);
             
 
-            var timeout = fixture.Create<DateTime>();
+            var timeout = DateTime.UtcNow;
             var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => message, timeout);
             await activity.Execute(context, next);
             await messageHandlerContext.Received(1).Send(message, Arg.Is<SendOptions>(opt => 
@@ -565,7 +565,7 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             context.Instance.Returns(orderState);
             
 
-            var timeout = fixture.Create<DateTime>();
+            var timeout = DateTime.UtcNow;
             var activity = new RequestTimeoutActivity<OrderState, PayOrder, SubmitOrder>(_ => Task.FromResult(message), timeout);
             await activity.Execute(context, next);
             await messageHandlerContext.Received(1).Send(message, Arg.Is<SendOptions>(opt => 

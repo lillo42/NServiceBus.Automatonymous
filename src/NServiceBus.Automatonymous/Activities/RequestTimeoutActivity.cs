@@ -27,6 +27,11 @@ namespace NServiceBus.Automatonymous.Activities
         /// <param name="at">The <see cref="DateTime"/> to request time.</param>
         public RequestTimeoutActivity(Func<BehaviorContext<TInstance>, TMessage> messageFactory, DateTime at)
         {
+            if (at.Kind == DateTimeKind.Unspecified)
+            {
+                throw new InvalidOperationException("Kind property of DateTime 'at' must be specified.");
+            }
+            
             _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
             _at = at;
         }
@@ -49,6 +54,11 @@ namespace NServiceBus.Automatonymous.Activities
         /// <param name="at">The <see cref="DateTime"/> to request time.</param>
         public RequestTimeoutActivity(Func<BehaviorContext<TInstance>, Task<TMessage>> asyncMessageFactory, DateTime at)
         {
+            if (at.Kind == DateTimeKind.Unspecified)
+            {
+                throw new InvalidOperationException("Kind property of DateTime 'at' must be specified.");
+            }
+            
             _asyncMessageFactory = asyncMessageFactory ?? throw new ArgumentNullException(nameof(asyncMessageFactory));
             _at = at;
         }
@@ -139,6 +149,11 @@ namespace NServiceBus.Automatonymous.Activities
         /// <param name="at">The <see cref="DateTime"/> to request time.</param>
         public RequestTimeoutActivity(Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory, DateTime at)
         {
+            if (at.Kind == DateTimeKind.Unspecified)
+            {
+                throw new InvalidOperationException("Kind property of DateTime 'at' must be specified.");
+            }
+            
             _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
             _at = at;
         }
@@ -161,6 +176,11 @@ namespace NServiceBus.Automatonymous.Activities
         /// <param name="at">The <see cref="DateTime"/> to request time.</param>
         public RequestTimeoutActivity(Func<BehaviorContext<TInstance, TData>, Task<TMessage>> asyncMessageFactory, DateTime at)
         {
+            if (at.Kind == DateTimeKind.Unspecified)
+            {
+                throw new InvalidOperationException("Kind property of DateTime 'at' must be specified.");
+            }
+            
             _asyncMessageFactory = asyncMessageFactory ?? throw new ArgumentNullException(nameof(asyncMessageFactory));
             _at = at;
         }
