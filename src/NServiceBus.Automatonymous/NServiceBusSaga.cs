@@ -53,7 +53,7 @@ namespace NServiceBus.Automatonymous
                 new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()), CancellationToken.None);
             eventContext.GetOrAddPayload(() => context);
             eventContext.GetOrAddPayload(() => _log);
-            eventContext.GetOrAddPayload(GetType);
+            eventContext.GetOrAddPayload(() => new SagaType(GetType()));
             await ((StateMachine<TState>) StateMachine).RaiseEvent(eventContext);
 
             var state = await StateMachine.GetState(Data);
