@@ -38,9 +38,9 @@ namespace Test
             InstanceState(x => x.CurrentState);
             Event(() => SubmitOrder);
             
-            // Initially(When(SubmitOrder)
-            //     .Send()
-            // );
+            Initially(When(SubmitOrder)
+                // .Respond()
+            );
         }
         
         public Event<SubmitOrder> SubmitOrder { get; private set; }

@@ -67,7 +67,7 @@ namespace NServiceBus.Automatonymous
         public Task Handle(object message, IMessageProcessingContext context)
         {
             var correlations = StateMachine.GetCorrelations(message.GetType());
-            return correlations.OnMissingSaga != null ? correlations.OnMissingSaga(message, context) : Task.CompletedTask;
+            return correlations.OnMissingSaga?.Invoke(message, context)!;
         }
     }
 }

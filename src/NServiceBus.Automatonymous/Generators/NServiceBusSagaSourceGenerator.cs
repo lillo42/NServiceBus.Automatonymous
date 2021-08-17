@@ -9,7 +9,7 @@ using NServiceBus.Automatonymous.Builders;
 namespace NServiceBus.Automatonymous.Generators
 {
     [Generator]
-    public class NServiceBusSagaGenerator : ISourceGenerator
+    public class NServiceBusSagaSourceGenerator : ISourceGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
         {
@@ -26,7 +26,7 @@ namespace NServiceBus.Automatonymous.Generators
             var parse = new Parse(context);
             foreach (var @class in receiver.CandidateClasses)
             {
-                var builder = parse.GetGenerationSpec(@class);
+                var builder = parse.CreateSagaBuilder(@class);
                 if (builder != null)
                 {
                     context.AddSource($"{builder.Name}.generated.cs", builder.Build());
@@ -51,7 +51,7 @@ namespace NServiceBus.Automatonymous.Generators
                 _startStateMachine = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartStateMachineAttribute")!;
             }
 
-            public NServiceBusSagaClassBuilder? GetGenerationSpec(ClassDeclarationSyntax classDeclarationSyntax)
+            public NServiceBusSagaClassBuilder? CreateSagaBuilder(ClassDeclarationSyntax classDeclarationSyntax)
             {
                 var compilation = _executionContext.Compilation;
                 var compilationUnitSyntax = classDeclarationSyntax.FirstAncestorOrSelf<CompilationUnitSyntax>()!;

@@ -31,7 +31,7 @@ namespace NServiceBus.Automatonymous.Tests.Generators
                 .AddSyntaxTrees(syntaxTrees)
                 .AddSyntaxTrees(node);
             
-            var driver = CSharpGeneratorDriver.Create(new Automatonymous.Generators.NServiceBusSagaGenerator());
+            var driver = CSharpGeneratorDriver.Create(new Automatonymous.Generators.NServiceBusSagaSourceGenerator());
             return driver.RunGenerators(compilation);
         }
 

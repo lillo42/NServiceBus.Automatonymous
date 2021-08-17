@@ -83,7 +83,7 @@ namespace NServiceBus.Automatonymous.Activities
     }
     
     /// <summary>
-    /// The <see cref="Activity{TInstance}"/> to publisg message
+    /// The <see cref="Activity{TInstance}"/> to publish message.
     /// </summary>
     /// <typeparam name="TInstance">The state machine data.</typeparam>
     /// <typeparam name="TData">The origin message type.</typeparam>
@@ -97,7 +97,7 @@ namespace NServiceBus.Automatonymous.Activities
         private readonly Func<BehaviorContext<TInstance, TData>, Task<TMessage>>? _asyncMessageFactory;
 
         /// <summary>
-        /// Initialize new instance of <see cref="SendActivity{TInstance,TData,TMessage}"/>.
+        /// Initialize new instance of <see cref="PublishActivity{TInstance,TData,TMessage}"/>.
         /// </summary>
         /// <param name="messageFactory">The sync factory of <typeparamref name="TInstance"/>.</param>
         /// <param name="configureOptions">The <see cref="Action{T1,T2}"/> to configure <see cref="SendOptions"/>.</param>
@@ -109,7 +109,7 @@ namespace NServiceBus.Automatonymous.Activities
         }
         
         /// <summary>
-        /// Initialize new instance of <see cref="SendActivity{TInstance,TData,TMessage}"/>.
+        /// Initialize new instance of <see cref="PublishActivity{TInstance,TData,TMessage}"/>.
         /// </summary>
         /// <param name="asyncMessageFactory">The async factory of <typeparamref name="TInstance"/>.</param>
         /// <param name="configureOptions">The <see cref="Action{T1,T2}"/> to configure <see cref="SendOptions"/>.</param>

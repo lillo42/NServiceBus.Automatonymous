@@ -6,7 +6,7 @@ using GreenPipes;
 namespace NServiceBus.Automatonymous.Activities
 {
     /// <summary>
-    /// The <see cref="Activity{TInstance}"/> to publish message
+    /// The <see cref="Activity{TInstance}"/> to request timeout message
     /// </summary>
     /// <typeparam name="TInstance">The state machine data.</typeparam>
     /// <typeparam name="TMessage">The message type.</typeparam>
@@ -127,7 +127,7 @@ namespace NServiceBus.Automatonymous.Activities
     }
     
     /// <summary>
-    /// The <see cref="Activity{TInstance}"/> to publisg message
+    /// The <see cref="Activity{TInstance}"/> to request timeout message
     /// </summary>
     /// <typeparam name="TInstance">The state machine data.</typeparam>
     /// <typeparam name="TData">The origin message type.</typeparam>
