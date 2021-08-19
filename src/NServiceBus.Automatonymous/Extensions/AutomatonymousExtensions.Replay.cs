@@ -1,17 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using Automatonymous.Binders;
-using GreenPipes;
 using NServiceBus;
 using NServiceBus.Automatonymous.Activities;
 
 // ReSharper disable once CheckNamespace
 namespace Automatonymous
 {
-    public static class AutomatonymousResponseExtensions
+    public static partial class AutomatonymousExtensions
     {
         /// <summary>
-        /// Response a message.
+        /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
         /// <param name="message">The <see cref="TMessage"/>.</param>
@@ -20,16 +19,16 @@ namespace Automatonymous
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance,TData}"/>.</returns>
-        public static EventActivityBinder<TInstance, TData> Response<TInstance, TData, TMessage>(
+        public static EventActivityBinder<TInstance, TData> Replay<TInstance, TData, TMessage>(
             this EventActivityBinder<TInstance, TData> binder,
             TMessage message,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
             where TMessage : class
-            => binder.Add(new ResponseActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
+            => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
 
         /// <summary>
-        /// Response a message.
+        /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
         /// <param name="message">The <see cref="TMessage"/>.</param>
@@ -38,16 +37,16 @@ namespace Automatonymous
         /// <typeparam name="TData">The event data</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance,TData}"/>.</returns>
-        public static EventActivityBinder<TInstance, TData> ResponseAsync<TInstance, TData, TMessage>(
+        public static EventActivityBinder<TInstance, TData> ReplayAsync<TInstance, TData, TMessage>(
             this EventActivityBinder<TInstance, TData> binder,
             Task<TMessage> message,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
             where TMessage : class
-            => binder.Add(new ResponseActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
+            => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
 
         /// <summary>
-        /// Response a message.
+        /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
         /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
@@ -56,16 +55,16 @@ namespace Automatonymous
         /// <typeparam name="TData">The event data</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance,TData}"/>.</returns>
-        public static EventActivityBinder<TInstance, TData> Response<TInstance, TData, TMessage>(
+        public static EventActivityBinder<TInstance, TData> Replay<TInstance, TData, TMessage>(
             this EventActivityBinder<TInstance, TData> binder,
             Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
             where TMessage : class
-            => binder.Add(new ResponseActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
+            => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
 
         /// <summary>
-        /// Response a message.
+        /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
         /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
@@ -74,12 +73,12 @@ namespace Automatonymous
         /// <typeparam name="TData">The event data</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance,TData}"/>.</returns>
-        public static EventActivityBinder<TInstance, TData> ResponseAsync<TInstance, TData, TMessage>(
+        public static EventActivityBinder<TInstance, TData> ReplayAsync<TInstance, TData, TMessage>(
             this EventActivityBinder<TInstance, TData> binder,
             Func<BehaviorContext<TInstance, TData>, Task<TMessage>> messageFactory,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
             where TMessage : class
-            => binder.Add(new ResponseActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
+            => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
     }
 }

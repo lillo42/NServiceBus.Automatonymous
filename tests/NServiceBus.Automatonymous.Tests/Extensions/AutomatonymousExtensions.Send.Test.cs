@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Automatonymous;
 using Automatonymous.Binders;
@@ -9,8 +8,9 @@ using Xunit;
 
 namespace NServiceBus.Automatonymous.Tests.Extensions
 {
-    public class AutomatonymousSendExtensionsTest
+    public partial class AutomatonymousExtensionsTest
     {
+        
         [Fact]
         public void SendSyncWithMessage()
         {
@@ -153,21 +153,6 @@ namespace NServiceBus.Automatonymous.Tests.Extensions
             binder.Add(Arg.Any<SendActivity<OrderState, PayOrder, SubmitOrder>>()).Returns(binder);
             binder.SendAsync(_ =>Task.FromResult(new SubmitOrder()), (_, _) => { }).Should().Be(binder);
             binder.Received(1).Add(Arg.Any<SendActivity<OrderState, PayOrder, SubmitOrder>>());
-        }
-        
-        public class SubmitOrder
-        {
-            public Guid OrderId { get; set; }
-        }
-        
-        public class PayOrder
-        {
-            public Guid OrderId { get; set; }
-        }
-        
-        public class OrderState : ContainSagaData
-        {
-            public Guid CorrelationId { get; set; }
         }
     }
 }

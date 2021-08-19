@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using AutoFixture;
 using Automatonymous;
-using FluentAssertions;
 using GreenPipes;
 using NServiceBus.Automatonymous.Activities;
 using NSubstitute;

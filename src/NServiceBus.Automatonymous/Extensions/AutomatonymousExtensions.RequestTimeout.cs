@@ -1,14 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Automatonymous.Binders;
-using GreenPipes;
 using NServiceBus;
 using NServiceBus.Automatonymous.Activities;
 
 // ReSharper disable once CheckNamespace
 namespace Automatonymous
 {
-    public static class AutomatonymousRequestTimeoutExtensions
+    public static partial class AutomatonymousExtensions
     {
         /// <summary>
         /// Request timeout.

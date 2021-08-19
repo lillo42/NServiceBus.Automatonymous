@@ -7,7 +7,7 @@ using NServiceBus.Automatonymous.Activities;
 // ReSharper disable once CheckNamespace
 namespace Automatonymous
 {
-    public static class AutomatonymousPublishExtensions
+    public static partial class AutomatonymousExtensions
     {
         /// <summary>
         /// Publish a message.

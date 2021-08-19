@@ -6,12 +6,12 @@ using GreenPipes;
 namespace NServiceBus.Automatonymous.Activities
 {
     /// <summary>
-    /// The <see cref="Activity{TInstance}"/> to response message
+    /// The <see cref="Activity{TInstance}"/> to replay a message.
     /// </summary>
     /// <typeparam name="TInstance">The state machine data.</typeparam>
     /// <typeparam name="TData">The origin message type.</typeparam>
     /// <typeparam name="TMessage">The message type.</typeparam>
-    public class ResponseActivity<TInstance, TData, TMessage> : Activity<TInstance, TData>
+    public class ReplayActivity<TInstance, TData, TMessage> : Activity<TInstance, TData>
         where TInstance : class, IContainSagaData
         where TMessage : class
     {
@@ -21,11 +21,11 @@ namespace NServiceBus.Automatonymous.Activities
         private readonly Func<BehaviorContext<TInstance, TData>, Task<TMessage>>? _asyncMessageFactory;
         
         /// <summary>
-        /// Initialize new instance of <see cref="ResponseActivity{TInstance,TData,TMessage}"/>.
+        /// Initialize new instance of <see cref="ReplayActivity{TInstance,TData,TMessage}"/>.
         /// </summary>
         /// <param name="messageFactory">The sync factory of <typeparamref name="TInstance"/>.</param>
         /// <param name="configureOptions">The <see cref="Action{T1,T2}"/> to configure <see cref="SendOptions"/>.</param>
-        public ResponseActivity(Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory, 
+        public ReplayActivity(Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory, 
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions)
         {
             _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
@@ -33,11 +33,11 @@ namespace NServiceBus.Automatonymous.Activities
         }
         
         /// <summary>
-        /// Initialize new instance of <see cref="ResponseActivity{TInstance,TData,TMessage}"/>.
+        /// Initialize new instance of <see cref="ReplayActivity{TInstance,TData,TMessage}"/>.
         /// </summary>
         /// <param name="asyncMessageFactory">The async factory of <typeparamref name="TInstance"/>.</param>
         /// <param name="configureOptions">The <see cref="Action{T1,T2}"/> to configure <see cref="SendOptions"/>.</param>
-        public ResponseActivity(Func<BehaviorContext<TInstance, TData>, Task<TMessage>> asyncMessageFactory, 
+        public ReplayActivity(Func<BehaviorContext<TInstance, TData>, Task<TMessage>> asyncMessageFactory, 
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions)
         {
             _asyncMessageFactory = asyncMessageFactory ?? throw new ArgumentNullException(nameof(asyncMessageFactory));

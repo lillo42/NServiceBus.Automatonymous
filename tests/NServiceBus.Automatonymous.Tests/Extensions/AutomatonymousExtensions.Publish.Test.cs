@@ -9,7 +9,7 @@ using Xunit;
 
 namespace NServiceBus.Automatonymous.Tests.Extensions
 {
-    public class AutomatonymousPublishExtensionsTest
+    public partial class AutomatonymousExtensionsTest
     {
         [Fact]
         public void PublishSyncWithMessage()
