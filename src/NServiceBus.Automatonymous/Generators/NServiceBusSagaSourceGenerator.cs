@@ -66,6 +66,7 @@ namespace NServiceBus.Automatonymous.Generators
                 }
                 
                 var startByEvents = new List<PropertyDeclarationSyntax>();
+                var timeoutEvents = new List<PropertyDeclarationSyntax>();
                 var events = new List<PropertyDeclarationSyntax>();
 
                 foreach (var propertyDeclarationSyntax in classDeclarationSyntax.Members
@@ -78,9 +79,13 @@ namespace NServiceBus.Automatonymous.Generators
                         continue;
                     }
                     
-                    if (HasStartSagaAttribute(propertyDeclarationSyntax, compilationSemanticModel))
+                    if (HasAttribute(propertyDeclarationSyntax, _startStateMachine, compilationSemanticModel))
                     {
                         startByEvents.Add(propertyDeclarationSyntax);
+                    }
+                    else if (HasAttribute(propertyDeclarationSyntax, _timeoutEvent, compilationSemanticModel))
+                    {
+                        timeoutEvents.Add(propertyDeclarationSyntax);
                     }
                     else
                     {
@@ -99,6 +104,10 @@ namespace NServiceBus.Automatonymous.Generators
                     .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
                     .ToList();
                 var eventGenericArgumentSymbol = events
+                    .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
+                    .ToList();
+                
+                var timeoutEventsGenericArgumentSymbol = timeoutEvents
                     .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
                     .ToList();
                 
@@ -124,24 +133,28 @@ namespace NServiceBus.Automatonymous.Generators
                     
                     .AddUsing(eventGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
                     .AddInterfaces(eventGenericArgumentSymbol.Select(x => $"IHandleMessages<{x!.Name}>"))
-                    .AddMethods(events.Zip(eventGenericArgumentSymbol, CreateHandler!));
+                    .AddMethods(events.Zip(eventGenericArgumentSymbol, CreateHandler!))
+                
+                    .AddUsing(timeoutEventsGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
+                    .AddInterfaces(timeoutEventsGenericArgumentSymbol.Select(x => $"IHandleTimeouts<{x!.Name}>"))
+                    .AddMethods(events.Zip(timeoutEventsGenericArgumentSymbol, CreateTimeoutHandler!));
             }
             
-            private  bool HasStartSagaAttribute(PropertyDeclarationSyntax propertyDeclarationSyntax, SemanticModel compilationSemanticModel)
+            private static bool HasAttribute(SyntaxNode propertyDeclarationSyntax, ISymbol attribute, SemanticModel compilationSemanticModel)
             {
                 foreach (var attributeSyntax in propertyDeclarationSyntax.DescendantNodes().OfType<AttributeSyntax>())
                 {
                     var symbolInfo = compilationSemanticModel.GetSymbolInfo(attributeSyntax);
 
                     if (symbolInfo.Symbol is IMethodSymbol methodSymbol 
-                        && methodSymbol.ContainingType.Equals(_startStateMachine, SymbolEqualityComparer.Default))
+                        && methodSymbol.ContainingType.Equals(attribute, SymbolEqualityComparer.Default))
                     { 
                         return true;
                     }
 
                     foreach (var candidateSymbol in symbolInfo.CandidateSymbols)
                     {
-                        if (candidateSymbol.ContainingType.Equals(_startStateMachine, SymbolEqualityComparer.Default))
+                        if (candidateSymbol.ContainingType.Equals(attribute, SymbolEqualityComparer.Default))
                         {
                             return true;
                         }
@@ -153,6 +166,12 @@ namespace NServiceBus.Automatonymous.Generators
 
             private static string CreateHandler(PropertyDeclarationSyntax propertyDeclarationSyntax, ISymbol symbol)
                 => $@"public Task Handle({symbol.Name} message, IMessageHandlerContext context)
+{{
+    return Execute(message, context, StateMachine.{propertyDeclarationSyntax.Identifier.Text});
+}}";
+            
+            private static string CreateTimeoutHandler(PropertyDeclarationSyntax propertyDeclarationSyntax, ISymbol symbol)
+                => $@"public Task Timeout({symbol.Name} message, IMessageHandlerContext context)
 {{
     return Execute(message, context, StateMachine.{propertyDeclarationSyntax.Identifier.Text});
 }}";
