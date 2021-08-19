@@ -41,6 +41,7 @@ namespace NServiceBus.Automatonymous.Generators
             private readonly INamedTypeSymbol _nServiceBusStateMachineContextSymbol;
             private readonly INamedTypeSymbol _eventSymbol;
             private readonly INamedTypeSymbol _startStateMachine;
+            private readonly INamedTypeSymbol _timeoutEvent;
 
             public Parse(GeneratorExecutionContext executionContext)
             {
@@ -49,6 +50,7 @@ namespace NServiceBus.Automatonymous.Generators
                 _nServiceBusStateMachineContextSymbol = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.NServiceBusStateMachine`1")!;
                 _eventSymbol = _executionContext.Compilation.GetTypeByMetadataName("Automatonymous.Event`1")!;
                 _startStateMachine = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartStateMachineAttribute")!;
+                _timeoutEvent = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.TimeoutEventAttribute")!;
             }
 
             public NServiceBusSagaClassBuilder? CreateSagaBuilder(ClassDeclarationSyntax classDeclarationSyntax)
