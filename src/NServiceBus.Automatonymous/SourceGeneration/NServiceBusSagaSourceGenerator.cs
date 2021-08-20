@@ -5,8 +5,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NServiceBus.Automatonymous.Builders;
+using NServiceBus.Automatonymous.Generators;
 
-namespace NServiceBus.Automatonymous.Generators
+namespace NServiceBus.Automatonymous.SourceGeneration
 {
     [Generator]
     public class NServiceBusSagaSourceGenerator : ISourceGenerator
@@ -52,6 +53,14 @@ namespace NServiceBus.Automatonymous.Generators
                 _startStateMachine = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartStateMachineAttribute")!;
                 _timeoutEvent = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.TimeoutEventAttribute")!;
             }
+            
+            private static DiagnosticDescriptor StartStateMachineAttributeNotFound { get; } = new DiagnosticDescriptor(
+                id: "NSBA001",
+                title: "StartStateMachineAttribute not found.",
+                messageFormat: "StartStateMachineAttribute not found for type '{0}'.",
+                category: Const.NServiceBusAutomatonymousSourceGeneration,
+                defaultSeverity: DiagnosticSeverity.Error,
+                isEnabledByDefault: true);
 
             public NServiceBusSagaClassBuilder? CreateSagaBuilder(ClassDeclarationSyntax classDeclarationSyntax)
             {
@@ -93,7 +102,13 @@ namespace NServiceBus.Automatonymous.Generators
                     }
                 }
 
-                if (startByEvents.Count == 0 && events.Count == 0)
+                if (startByEvents.Count == 0)
+                {
+                    _executionContext.ReportDiagnostic(Diagnostic.Create(StartStateMachineAttributeNotFound, Location.None, classDeclarationSyntax.Identifier.Text));
+                    return null;
+                }
+
+                if (events.Count == 0)
                 {
                     return null;
                 }
