@@ -22,6 +22,8 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{9F123120-54A7-4335-A5E4-153B4B3859EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F123120-54A7-4335-A5E4-153B4B3859EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F123120-54A7-4335-A5E4-153B4B3859EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA10855F-F762-4EFA-8669-5C23B09EAF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA10855F-F762-4EFA-8669-5C23B09EAF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA10855F-F762-4EFA-8669-5C23B09EAF0B}.Debug|x64.ActiveCfg = Debug|Any CPU
