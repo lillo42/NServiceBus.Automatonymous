@@ -45,6 +45,9 @@ namespace NServiceBus.Automatonymous.Events
         new Func<TMessage, IMessageProcessingContext, Task>? OnMissingSaga { get; }
     }
 
+    /// <summary>
+    /// The event configuration.
+    /// </summary>
     public interface IEventCorrelation
     {
         /// <summary>

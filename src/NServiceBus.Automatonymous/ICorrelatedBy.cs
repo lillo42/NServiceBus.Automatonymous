@@ -4,12 +4,12 @@ namespace NServiceBus.Automatonymous
     /// Correlating message by the <see cref="CorrelationId"/>.
     /// </summary>
     /// <remarks>
-    /// When a message implement this interface we automatic bind the Correlation with the saga
+    /// When a message implement this interface we automatic bind the Correlation with the saga.
     /// </remarks>
     public interface ICorrelatedBy
     {
         /// <summary>
-        /// The CorrelationId
+        /// The CorrelationId.
         /// </summary>
         object? CorrelationId { get; }
     }
@@ -19,11 +19,15 @@ namespace NServiceBus.Automatonymous
     /// </summary>
     /// <typeparam name="TKey">The Correlation type.</typeparam>
     /// <remarks>
-    /// When a message implement this interface we automatic bind the Correlation with the saga
+    /// When a message implement this interface we automatic bind the Correlation with the saga.
     /// </remarks>
     public interface ICorrelatedBy<out TKey> : ICorrelatedBy
     {
         object? ICorrelatedBy.CorrelationId => CorrelationId;
+        
+        /// <summary>
+        /// The CorrelationId.
+        /// </summary>
         new TKey CorrelationId { get; }
     }
 }

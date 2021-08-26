@@ -8,15 +8,20 @@ using NServiceBus.Automatonymous.Builders;
 using NServiceBus.Automatonymous.Generators;
 
 namespace NServiceBus.Automatonymous.SourceGeneration
-{
+{                       
+    /// <summary>
+    /// The<see cref="NServiceBusSaga{TStateMachine,TState}"/> generator.
+    /// </summary>
     [Generator]
     public class NServiceBusSagaSourceGenerator : ISourceGenerator
     {
+        /// <inheritdoc />
         public void Initialize(GeneratorInitializationContext context)
         {
             context.RegisterForSyntaxNotifications(() => new StateMachineReceiver());
         }
 
+        /// <inheritdoc />
         public void Execute(GeneratorExecutionContext context)
         {
             if (!(context.SyntaxReceiver is StateMachineReceiver receiver) || receiver.CandidateClasses.Count == 0)

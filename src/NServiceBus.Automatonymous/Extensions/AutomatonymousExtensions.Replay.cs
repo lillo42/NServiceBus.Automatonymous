@@ -13,7 +13,7 @@ namespace Automatonymous
         /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
         /// <param name="configureOptions">The <see cref="ReplyOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
@@ -31,7 +31,7 @@ namespace Automatonymous
         /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
         /// <param name="configureOptions">The <see cref="ReplyOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>
@@ -49,7 +49,7 @@ namespace Automatonymous
         /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
         /// <param name="configureOptions">The <see cref="ReplyOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>
@@ -67,7 +67,7 @@ namespace Automatonymous
         /// Replay a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
         /// <param name="configureOptions">The <see cref="ReplyOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>

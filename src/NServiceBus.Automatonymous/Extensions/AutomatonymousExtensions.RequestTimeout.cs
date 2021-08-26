@@ -13,7 +13,7 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -26,7 +26,7 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -39,8 +39,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -54,8 +54,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -69,8 +69,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -84,8 +84,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -99,8 +99,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -114,8 +114,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -130,8 +130,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -145,8 +145,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
@@ -160,7 +160,7 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -174,7 +174,7 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -188,8 +188,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -204,8 +204,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -220,8 +220,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -236,8 +236,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -252,8 +252,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -268,8 +268,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -285,8 +285,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="at">The <see cref="DateTime"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="at">The <see cref="DateTime"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -301,8 +301,8 @@ namespace Automatonymous
         /// Request timeout.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
-        /// <param name="within">The <see cref="TimeSpan"/> that the <see cref="TMessage"/> should be send.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
+        /// <param name="within">The <see cref="TimeSpan"/> that the <typeparamref name="TMessage"/> should be send.</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>

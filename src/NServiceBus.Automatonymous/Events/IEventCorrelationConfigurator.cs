@@ -6,8 +6,8 @@ namespace NServiceBus.Automatonymous.Events
     /// <summary>
     /// The event correlation configurator. 
     /// </summary>
-    /// <typeparam name="TState">The saga <see cref="TState"/>.</typeparam>
-    /// <typeparam name="TMessage">The message <see name="TMessage"/>.</typeparam>
+    /// <typeparam name="TState">The saga state.</typeparam>
+    /// <typeparam name="TMessage">The message.</typeparam>
     public interface IEventCorrelationConfigurator<TState, TMessage>
         where TState : class, IContainSagaData
     {
@@ -19,7 +19,7 @@ namespace NServiceBus.Automatonymous.Events
         IEventCorrelationConfigurator<TState, TMessage> CorrelateBy(Expression<Func<TMessage, object>> propertyExpression);
         
         /// <summary>
-        /// Configure how the <see cref="TMessage"/> will find saga's data.
+        /// Configure how the <typeparamref name="TMessage"/> will find saga's data.
         /// </summary>
         /// <param name="propertyExpression">An <see cref="Expression{TDelegate}" /> that represents the message.</param>
         /// <returns>The <see cref="IEventCorrelationConfigurator{TState,TMessage}"/>.</returns>

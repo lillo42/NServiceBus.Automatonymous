@@ -6,7 +6,7 @@ using GreenPipes.Internals.Extensions;
 
 namespace NServiceBus.Automatonymous.Extensions
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         public static bool ClosesType(this Type type, Type openType, [NotNullWhen(true)]out Type[]? arguments)
         {

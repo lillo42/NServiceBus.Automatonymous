@@ -7,13 +7,16 @@ using NServiceBus.Automatonymous.Activities;
 // ReSharper disable once CheckNamespace
 namespace Automatonymous
 {
+    /// <summary>
+    /// The automatonymous extensions.
+    /// </summary>
     public static partial class AutomatonymousExtensions
     {
         /// <summary>
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -29,7 +32,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -46,7 +49,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -62,7 +65,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TMessage">The message type.</typeparam>
@@ -79,7 +82,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
         /// <param name="configureOptions">The <see cref="SendOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>
@@ -96,7 +99,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="message">The <see cref="TMessage"/>.</param>
+        /// <param name="message">The <typeparamref name="TMessage"/>.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>
@@ -113,7 +116,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>
@@ -130,7 +133,7 @@ namespace Automatonymous
         /// Publish a message.
         /// </summary>
         /// <param name="binder">The <see cref="EventActivityBinder{TInstance,TData}"/>.</param>
-        /// <param name="messageFactory">The <see cref="TMessage"/> factory.</param>
+        /// <param name="messageFactory">The <typeparamref name="TMessage"/> factory.</param>
         /// <param name="configureOptions">The <see cref="PublishOptions"/> configurator</param>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
         /// <typeparam name="TData">The event data</typeparam>

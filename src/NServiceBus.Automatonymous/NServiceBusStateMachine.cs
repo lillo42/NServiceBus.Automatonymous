@@ -9,12 +9,19 @@ using NServiceBus.Automatonymous.Extensions;
 
 namespace NServiceBus.Automatonymous
 {
+    /// <summary>
+    /// The base <see cref="AutomatonymousStateMachine{TInstance}"/>.
+    /// </summary>
+    /// <typeparam name="TState">The saga data.</typeparam>
     public abstract class NServiceBusStateMachine<TState> : AutomatonymousStateMachine<TState>
         where TState : class, IContainSagaData, new()
     {
         private readonly Dictionary<Event, IEventCorrelation> _correlations = new Dictionary<Event, IEventCorrelation>();
         private readonly Dictionary<Type, Event> _events = new Dictionary<Type, Event>();
 
+        /// <summary>
+        /// Initialize new <see cref="NServiceBusStateMachine{TState}" />.
+        /// </summary>
         protected NServiceBusStateMachine()
         {
             RegisterAllEventImplicit();
@@ -52,6 +59,9 @@ namespace NServiceBus.Automatonymous
             }
         }
         
+        /// <summary>
+        /// The <see cref="IEventCorrelation"/>.
+        /// </summary>
         public IEnumerable<IEventCorrelation> Correlations
         {
             get
@@ -66,9 +76,20 @@ namespace NServiceBus.Automatonymous
             }
         }
 
+        /// <summary>
+        /// Declares a data event on the state machine, and initializes the property.
+        /// </summary>
+        /// <param name="propertyExpression">The <see cref="Expression{T}"/> to get property expression.</param>
+        /// <typeparam name="T">The message.</typeparam>
         protected override void Event<T>(Expression<Func<Event<T>>> propertyExpression) 
             => Event(propertyExpression, x => { });
 
+        /// <summary>
+        /// Declares a data event on the state machine, and initializes the property.
+        /// </summary>
+        /// <param name="propertyExpression">The <see cref="Expression{T}" /> to get property expression.</param>
+        /// <param name="configureEventCorrelation">The configuration of <see cref="IEventCorrelationConfigurator{TState,TMessage}" />.</param>
+        /// <typeparam name="T">The message.</typeparam>
         protected void Event<T>(Expression<Func<Event<T>>> propertyExpression,
             Action<IEventCorrelationConfigurator<TState, T>> configureEventCorrelation)
         {
@@ -101,8 +122,16 @@ namespace NServiceBus.Automatonymous
             where TMessage : ICorrelatedBy 
             => x => x.CorrelationId!;
 
+        /// <summary>
+        /// The saga correlation property.
+        /// Used to find saga.
+        /// </summary>
+        /// <returns>The saga correlation property.</returns>
         public abstract Expression<Func<TState, object>> CorrelationByProperty();
 
+        /// <summary>
+        /// Default property name in message.
+        /// </summary>
         protected virtual string DefaultCorrelationMessageByPropertyName { get; } = string.Empty;
 
         private Expression<Func<TMessage, object>>? GetDefaultCorrelationMessageByProperty<TMessage>()
