@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.IO;
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
@@ -74,16 +72,16 @@ class Build : NukeBuild
             DotNetBuild(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
-                // .SetAssemblyVersion(GitVersion.AssemblySemVer)
-                // .SetFileVersion(GitVersion.AssemblySemFileVer)
-                // .SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetAssemblyVersion(GitVersion?.AssemblySemVer)
+                .SetFileVersion(GitVersion?.AssemblySemFileVer)
+                .SetInformationalVersion(GitVersion?.InformationalVersion)
                 .EnableNoRestore());
         });
     
-    IEnumerable<Project> TestProjects => Solution.GetProjects("*.Test");
+    IEnumerable<Project> TestProjects => Solution.GetProjects("*.Tests");
     AbsolutePath TestResultDirectory => ArtifactsDirectory / "test-results";
 
-    Target Test => _ => _
+    Target Tests => _ => _
         .DependsOn(Compile)
         .Produces(TestResultDirectory / "*.trx")
         .Produces(TestResultDirectory / "*.xml")
@@ -98,7 +96,7 @@ class Build : NukeBuild
                 .When(InvokedTargets.Contains(Coverage) || IsServerBuild, _ => _
                     .EnableCollectCoverage()
                     .SetCoverletOutputFormat(CoverletOutputFormat.opencover)
-                    .When(IsServerBuild, _ => _.EnableUseSourceLink()))
+                    .EnableUseSourceLink())
                 .CombineWith(TestProjects, (_, v) => _
                     .SetProjectFile(v)
                     .SetLoggers($"trx;LogFileName={v.Name}.trx")
@@ -110,9 +108,9 @@ class Build : NukeBuild
     string CoverageReportArchive => ArtifactsDirectory / "coverage-report.zip";
     
     Target Coverage => _ => _
-        .DependsOn(Test)
-        .TriggeredBy(Test)
-        .Consumes(Test)
+        .DependsOn(Tests)
+        .TriggeredBy(Tests)
+        .Consumes(Tests)
         .Produces(CoverageReportArchive)
         .Executes(() =>
         {
