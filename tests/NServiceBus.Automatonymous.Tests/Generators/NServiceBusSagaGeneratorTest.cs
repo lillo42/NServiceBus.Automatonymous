@@ -324,7 +324,7 @@ namespace NServiceBus.Automatonymous.Generated
         }
         public Task Timeout(CancelOrder message, IMessageHandlerContext context)
         {
-            return Execute(message, context, StateMachine.CompleteOrder);
+            return Execute(message, context, StateMachine.CancelOrder);
         }
     }
 }

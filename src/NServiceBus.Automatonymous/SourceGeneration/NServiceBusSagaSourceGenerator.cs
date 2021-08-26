@@ -66,6 +66,22 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 category: Const.NServiceBusAutomatonymousSourceGeneration,
                 defaultSeverity: DiagnosticSeverity.Error,
                 isEnabledByDefault: true);
+            
+            private static DiagnosticDescriptor StateMachineShouldHaveOnlyOneConstructor { get; } = new DiagnosticDescriptor(
+                id: "NSBA002",
+                title: "StateMachine should have only one constructor.",
+                messageFormat: "StateMachine should have only one constructor for type '{0}'.",
+                category: Const.NServiceBusAutomatonymousSourceGeneration,
+                defaultSeverity: DiagnosticSeverity.Error,
+                isEnabledByDefault: true);
+            
+            private static DiagnosticDescriptor StateMachineConstructorShouldBeParameterless { get; } = new DiagnosticDescriptor(
+                id: "NSBA003",
+                title: "StateMachine constructor should be parameter less.",
+                messageFormat: "StateMachine constructor should be parameter less for type '{0}'.",
+                category: Const.NServiceBusAutomatonymousSourceGeneration,
+                defaultSeverity: DiagnosticSeverity.Error,
+                isEnabledByDefault: true);
 
             public NServiceBusSagaClassBuilder? CreateSagaBuilder(ClassDeclarationSyntax classDeclarationSyntax)
             {
@@ -78,7 +94,8 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 {
                     return null;
                 }
-                
+
+
                 var startByEvents = new List<PropertyDeclarationSyntax>();
                 var timeoutEvents = new List<PropertyDeclarationSyntax>();
                 var events = new List<PropertyDeclarationSyntax>();
@@ -157,7 +174,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 
                     .AddUsing(timeoutEventsGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
                     .AddInterfaces(timeoutEventsGenericArgumentSymbol.Select(x => $"IHandleTimeouts<{x!.Name}>"))
-                    .AddMethods(events.Zip(timeoutEventsGenericArgumentSymbol, CreateTimeoutHandler!));
+                    .AddMethods(timeoutEvents.Zip(timeoutEventsGenericArgumentSymbol, CreateTimeoutHandler!));
             }
             
             private static bool HasAttribute(SyntaxNode propertyDeclarationSyntax, ISymbol attribute, SemanticModel compilationSemanticModel)
