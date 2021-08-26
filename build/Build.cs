@@ -137,7 +137,7 @@ class Build : NukeBuild
                 .SetNoRestore(InvokedTargets.Contains(Restore))
                 .SetConfiguration(Configuration)
                 .SetOutputDirectory(PackageDirectory)
-                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetVersion(GitVersion?.NuGetVersionV2)
                 .EnableIncludeSource()
                 .EnableIncludeSymbols());
         });
