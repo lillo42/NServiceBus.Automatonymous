@@ -96,10 +96,10 @@ class Build : NukeBuild
                 .When(InvokedTargets.Contains(Coverage) || IsServerBuild, _ => _
                     .EnableCollectCoverage()
                     .SetCoverletOutputFormat(CoverletOutputFormat.opencover)
-                    .EnableUseSourceLink())
+                    .When(IsServerBuild,  x => x.EnableUseSourceLink()))
                 .CombineWith(TestProjects, (_, v) => _
                     .SetProjectFile(v)
-                    .SetLoggers($"trx;LogFileName={v.Name}.trx")
+                    .SetLoggers("trx")
                     .SetCoverletOutput(TestResultDirectory / $"{v.Name}.xml"))
             );
         });
