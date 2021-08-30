@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
@@ -11,6 +12,7 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Utilities.Collections;
+using static Nuke.Common.IO.CompressionTasks;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
@@ -121,6 +123,11 @@ class Build : NukeBuild
                     .SetReportTypes(ReportTypes.HtmlInline)
                     .SetTargetDirectory(CoverageReportDirectory)
                     .SetFramework("netcoreapp2.1"));
+                
+                CompressZip(
+                    directory: CoverageReportDirectory,
+                    archiveFile: CoverageReportArchive,
+                    fileMode: FileMode.Create);
             }
         });
     
