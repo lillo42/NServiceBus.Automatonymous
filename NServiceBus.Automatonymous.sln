@@ -26,6 +26,13 @@ EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{9F123120-54A7-4335-A5E4-153B4B3859EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-actions", "github-actions", "{36D9F5A1-6825-408A-8F90-B58F7116C365}"
+ProjectSection(SolutionItems) = preProject
+	.github\workflows\build.yml = .github\workflows\build.yml
+	.github\workflows\pr.yml = .github\workflows\pr.yml
+	.github\workflows\release.yml = .github\workflows\release.yml
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,5 +102,6 @@ Global
 		{4FD3DD07-7607-49B7-8D59-125F421C9F89} = {6AC63BA9-0853-4576-B7C1-AE7D7ABE20A0}
 		{57FE492D-3998-40DD-AF1A-92697611D0CF} = {F333A68E-AF5C-4359-A842-D532BAF87F6B}
 		{005B89A9-894A-412B-82F8-B9BB3971B7F6} = {F333A68E-AF5C-4359-A842-D532BAF87F6B}
+		{36D9F5A1-6825-408A-8F90-B58F7116C365} = {E093A107-4420-4AB0-A126-C6DD2BF07732}
 	EndGlobalSection
 EndGlobal
