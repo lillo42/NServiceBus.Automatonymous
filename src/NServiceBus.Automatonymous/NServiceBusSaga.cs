@@ -20,7 +20,7 @@ namespace NServiceBus.Automatonymous
         where TState : class, IContainSagaData, new()
     {
         // ReSharper disable once StaticMemberInGenericType
-        private static readonly ILog? Log = LogManager.GetLogger(typeof(TStateMachine));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(TStateMachine));
         
         /// <summary>
         /// The <typeparamref name="TStateMachine" />.
@@ -86,7 +86,7 @@ namespace NServiceBus.Automatonymous
         public Task Handle(object message, IMessageProcessingContext context)
         {
             var correlations = StateMachine.GetCorrelations(message.GetType());
-            return correlations.OnMissingSaga?.Invoke(message, context)!;
+            return correlations.OnMissingSaga?.Invoke(message, context) ?? Task.CompletedTask;
         }
     }
 }

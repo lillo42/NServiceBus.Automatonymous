@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>$(AppTargetFramework)</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NServiceBus.Automatonymous\NServiceBus.Automatonymous.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Automatonymous" />
+        <PackageReference Include="Hangfire" />
+        <PackageReference Include="NServiceBus" />
+    </ItemGroup>
+</Project>

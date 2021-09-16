@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -42,7 +43,7 @@ namespace NServiceBus.Automatonymous.Tests
             state.Name.Should().Be(@event.Name);
         }
 
-        private sealed class RelationshipStateMachine : AutomatonymousStateMachine<Relationship>
+        private sealed class RelationshipStateMachine : NServiceBusStateMachine<Relationship>
         {
             public RelationshipStateMachine()
             {
@@ -59,6 +60,7 @@ namespace NServiceBus.Automatonymous.Tests
                     When(PissOff)
                         .TransitionTo(Enemy),
                     When(Introduce)
+                        .Schedule(OrderCompletionTimeout, context => new OrderCompleted(), DateTime.UtcNow)
                         .Then(ctx => ctx.Instance.Name = ctx.Data.Name)
                         .TransitionTo(Friend)
                 );
@@ -70,17 +72,26 @@ namespace NServiceBus.Automatonymous.Tests
             public Event Hello { get; private set; } = null!;
             public Event PissOff { get; private set; } = null!;
             public Event<Person> Introduce { get; private set; } = null!;
+
+            public Schedule<Relationship, OrderCompleted> OrderCompletionTimeout { get; private set; } = null!; 
+
+            public override Expression<Func<Relationship, object>> CorrelationByProperty() => x => x.Id;
         }
         
-        private class Relationship
+        private class Relationship : ContainSagaData
         {
             public State CurrentState { get; set; } = null!;
             public string Name { get; set; } = string.Empty;
         }
         
-        private class Person
+        private class Person : IMessage
         {
             public string Name { get; set; } = string.Empty;
+        }
+        
+        public class OrderCompleted : IMessage
+        {
+            public Guid OrderId { get; set; }
         }
     }
 }
