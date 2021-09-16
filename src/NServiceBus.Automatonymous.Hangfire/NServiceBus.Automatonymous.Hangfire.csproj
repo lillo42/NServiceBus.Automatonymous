@@ -2,6 +2,19 @@
 
     <PropertyGroup>
         <TargetFramework>$(AppTargetFramework)</TargetFramework>
+        <Nullable>enable</Nullable>
+        <OutputType>Library</OutputType>
+
+        <Title>NServiceBus.Automatonymous.Hangfire</Title>
+        <Description>Integrate NServiceBus with Automatonymous and Hangfire</Description>
+
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <RepositoryUrl>https://github.com/lillo42/NServiceBus.Automatonymous</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+
+        <IsPackable>true</IsPackable>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>

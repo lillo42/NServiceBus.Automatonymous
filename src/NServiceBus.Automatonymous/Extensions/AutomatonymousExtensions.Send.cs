@@ -21,7 +21,7 @@ namespace Automatonymous
             this EventActivityBinder<TInstance> binder,
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class, new()
+            where TMessage : class, IMessage , new()
             => binder.Add(new SendActivity<TInstance, TMessage>(_ => new TMessage(), configureOptions));
         
         /// <summary>
@@ -38,7 +38,7 @@ namespace Automatonymous
             TMessage message,
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TMessage>(_ => message, configureOptions));
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Automatonymous
             Task<TMessage> message,
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TMessage>(_ => message, configureOptions));
 
 
@@ -73,7 +73,7 @@ namespace Automatonymous
             Func<BehaviorContext<TInstance>, TMessage> messageFactory,
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TMessage>(messageFactory, configureOptions));
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Automatonymous
             Func<BehaviorContext<TInstance>, Task<TMessage>> messageFactory,
             Action<BehaviorContext<TInstance>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TMessage>(messageFactory, configureOptions));
 
 
@@ -109,7 +109,7 @@ namespace Automatonymous
             TMessage message,
             Action<BehaviorContext<TInstance, TData>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Automatonymous
             Task<TMessage> message,
             Action<BehaviorContext<TInstance, TData>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Automatonymous
             Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory,
             Action<BehaviorContext<TInstance, TData>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Automatonymous
             Func<BehaviorContext<TInstance, TData>, Task<TMessage>> messageFactory,
             Action<BehaviorContext<TInstance, TData>, SendOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new SendActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
     }
 }

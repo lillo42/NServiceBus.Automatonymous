@@ -13,7 +13,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TMessage">The message type.</typeparam>
     public class ReplayActivity<TInstance, TData, TMessage> : Activity<TInstance, TData>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage 
     {
         
         private readonly Action<BehaviorContext<TInstance, TData>, ReplyOptions>? _configureOptions;

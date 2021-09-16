@@ -12,7 +12,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TMessage">The message type.</typeparam>
     public class ScheduleActivity<TInstance, TMessage> : Activity<TInstance>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage 
     {
         private readonly Schedule<TInstance> _schedule;
         private readonly Func<BehaviorContext<TInstance>, DateTime> _timeProvider;
@@ -108,7 +108,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TData">The origin message type.</typeparam>
     public class ScheduleActivity<TInstance, TData, TMessage> : Activity<TInstance, TData>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage 
     {
         private readonly Schedule<TInstance> _schedule;
         private readonly Func<BehaviorContext<TInstance, TData>, DateTime> _timeProvider;

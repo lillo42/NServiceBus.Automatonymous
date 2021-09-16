@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>$(AppTargetFramework)</TargetFramework>
     <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

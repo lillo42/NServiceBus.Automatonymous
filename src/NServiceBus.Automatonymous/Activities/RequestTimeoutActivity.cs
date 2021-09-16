@@ -12,7 +12,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TMessage">The message type.</typeparam>
     public class RequestTimeoutActivity<TInstance, TMessage> : Activity<TInstance>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage 
     {
         private readonly Func<BehaviorContext<TInstance>, TMessage>? _messageFactory;
         private readonly Func<BehaviorContext<TInstance>, Task<TMessage>>? _asyncMessageFactory;
@@ -134,7 +134,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TMessage">The message type.</typeparam>
     public class RequestTimeoutActivity<TInstance, TData, TMessage> : Activity<TInstance, TData>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage 
     {
         private readonly Func<BehaviorContext<TInstance, TData>, TMessage>? _messageFactory;
         private readonly Func<BehaviorContext<TInstance, TData>, Task<TMessage>>? _asyncMessageFactory;

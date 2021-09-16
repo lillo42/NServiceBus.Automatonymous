@@ -166,12 +166,12 @@ namespace NServiceBus.Automatonymous.Tests.Activities
             called.Should().BeTrue();
         }
 
-        public class SubmitOrder
+        public class SubmitOrder : IMessage
         {
             public Guid OrderId { get; set; }
         }
         
-        public class PayOrder
+        public class PayOrder : IMessage
         {
             public Guid OrderId { get; set; }
         }

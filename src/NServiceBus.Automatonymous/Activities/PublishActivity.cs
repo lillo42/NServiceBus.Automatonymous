@@ -12,7 +12,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TMessage">The message type.</typeparam>
     public class PublishActivity<TInstance, TMessage> : Activity<TInstance>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage
     {
         private readonly Action<BehaviorContext<TInstance>, PublishOptions>? _configureOptions;
         private readonly Func<BehaviorContext<TInstance>, TMessage>? _messageFactory;
@@ -90,7 +90,7 @@ namespace NServiceBus.Automatonymous.Activities
     /// <typeparam name="TMessage">The message type.</typeparam>
     public class PublishActivity<TInstance, TData, TMessage> : Activity<TInstance, TData>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage
     {
         private readonly Action<BehaviorContext<TInstance, TData>, PublishOptions>? _configureOptions;
         private readonly Func<BehaviorContext<TInstance, TData>, TMessage>? _messageFactory;

@@ -24,7 +24,7 @@ namespace Automatonymous
             TMessage message,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Automatonymous
             Task<TMessage> message,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(_ => message, configureOptions));
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Automatonymous
             Func<BehaviorContext<TInstance, TData>, TMessage> messageFactory,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Automatonymous
             Func<BehaviorContext<TInstance, TData>, Task<TMessage>> messageFactory,
             Action<BehaviorContext<TInstance, TData>, ReplyOptions>? configureOptions = null)
             where TInstance : class, IContainSagaData
-            where TMessage : class
+            where TMessage : class, IMessage 
             => binder.Add(new ReplayActivity<TInstance, TData, TMessage>(messageFactory, configureOptions));
     }
 }

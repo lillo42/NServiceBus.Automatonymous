@@ -155,12 +155,12 @@ namespace NServiceBus.Automatonymous.Tests.Extensions
             binder.Received(1).Add(Arg.Any<PublishActivity<OrderState, PayOrder, SubmitOrder>>());
         }
         
-        public class SubmitOrder
+        public class SubmitOrder : IMessage
         {
             public Guid OrderId { get; set; }
         }
         
-        public class PayOrder
+        public class PayOrder : IMessage
         {
             public Guid OrderId { get; set; }
         }
