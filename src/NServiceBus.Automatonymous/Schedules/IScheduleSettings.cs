@@ -19,6 +19,6 @@ namespace NServiceBus.Automatonymous.Schedules
         /// <summary>
         /// Configure the received correlation.
         /// </summary>
-        Action<IEventCorrelationConfigurator<TInstance, TMessage>> Received { get; }
+        Action<IEventCorrelationConfigurator<TInstance, TMessage>>? Received { get; }
     }
 }

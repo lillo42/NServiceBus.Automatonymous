@@ -416,7 +416,32 @@ namespace Automatonymous
             where TInstance : class, IContainSagaData
             where TMessage : class, IMessage =>
             source.Add(new ScheduleActivity<TInstance, TData,TMessage>(messageFactory, schedule, _ => DateTime.UtcNow.Add(delay)));
+
+        /// <summary>
+        /// Unschedule a message, if the message was scheduled.
+        /// </summary>
+        /// <typeparam name="TInstance">The state machine data.</typeparam>
+        /// <param name="source">The <see cref="EventActivityBinder{TInstance}"/>.</param>
+        /// <param name="schedule">The scheduler config.</param>
+        /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
+        public static EventActivityBinder<TInstance> Unschedule<TInstance>(
+            this EventActivityBinder<TInstance> source,
+            Schedule<TInstance> schedule)
+            where TInstance : class, IContainSagaData =>
+            source.Add(new UnscheduleActivity<TInstance>(schedule));
         
-        
+        /// <summary>
+        /// Unschedule a message, if the message was scheduled.
+        /// </summary>
+        /// <typeparam name="TInstance">The state machine data.</typeparam>
+        /// <param name="source">The <see cref="EventActivityBinder{TInstance}"/>.</param>
+        /// <param name="schedule">The scheduler config.</param>
+        /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
+        public static EventActivityBinder<TInstance, TData> Unschedule<TInstance, TData>(
+            this EventActivityBinder<TInstance, TData> source,
+            Schedule<TInstance> schedule)
+            where TInstance : class, IContainSagaData =>
+            source.Add(new UnscheduleActivity<TInstance>(schedule));
+
     }
 }

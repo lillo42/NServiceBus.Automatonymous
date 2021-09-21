@@ -2,7 +2,7 @@ using NServiceBus;
 
 namespace SimpleStateMachine
 {
-    public class CancelOrder : IMessage
+    public interface CancelOrder : IMessage
     {
         
     }

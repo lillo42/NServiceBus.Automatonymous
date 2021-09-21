@@ -1,5 +1,6 @@
 using System;
 using Automatonymous;
+using MassTransit;
 
 namespace TestProject1
 {
@@ -21,13 +22,21 @@ namespace TestProject1
     {
         public Guid CorrelationId { get; set; }
         public string CurrentState { get; set; }
-
+        
+        public Guid? OrderCompletionTimeoutId { get; set; }
         public DateTime? OrderDate { get; set; }
     }
-    public class OrderSaga : MassTransitStateMachine<OrderData>
+    
+    public sealed class OrderSaga : MassTransitStateMachine<OrderData>
     {
         public OrderSaga()
         {
+            
+             //Schedule<OrderCompletionTimeoutExpired>(OrderCompletionTimeout, x => x.OrderCompletionTimeoutId,
+                        //     x =>
+                        //     {
+                        //         
+                        //     });
             Initially(
                 When(SubmitOrder)
                     .Then(x => x.Instance.OrderDate = x.Data.OrderDate)
@@ -38,9 +47,10 @@ namespace TestProject1
             During(Submitted,
                 When(OrderAccepted)
                     //.Request()
-                    //.Schedule()
+                    // .Schedule(x => x.Init<OrderCompletionTimeoutExpired>(new{}))
                       // .Unschedule()
-                      .TransitionTo(Accepted));
+                    //.Unschedule()
+                    .TransitionTo(Accepted));
 
             During(Accepted,
                 When(SubmitOrder)
@@ -51,5 +61,12 @@ namespace TestProject1
         public Event<OrderAccepted> OrderAccepted { get; private set; } = null!;
         public State Submitted { get; private set; } = null!;
         public State Accepted { get; private set; } = null!;
+        
+        public Schedule<OrderData, OrderCompletionTimeoutExpired> OrderCompletionTimeout { get; private set; }
+    }
+    
+    public class OrderCompletionTimeoutExpired
+    {
+        Guid OrderId { get; }
     }
 }
