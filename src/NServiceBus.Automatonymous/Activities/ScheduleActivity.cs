@@ -29,7 +29,7 @@ namespace NServiceBus.Automatonymous.Activities
             Func<BehaviorContext<TInstance>, DateTime> timeProvider)
             : this(schedule, timeProvider)
         {
-            _messageFactory = messageFactory;
+            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
         }
 
         /// <summary>
@@ -42,13 +42,13 @@ namespace NServiceBus.Automatonymous.Activities
             Func<BehaviorContext<TInstance>, DateTime> timeProvider)
             : this(schedule, timeProvider)
         {
-            _asyncMessageFactory = messageFactory;
+            _asyncMessageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
         }
 
         private ScheduleActivity(Schedule<TInstance> schedule, Func<BehaviorContext<TInstance>, DateTime> timeProvider)
         {
-            _schedule = schedule;
-            _timeProvider = timeProvider;
+            _schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
+            _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         }
         
         /// <inheritdoc />
@@ -125,7 +125,7 @@ namespace NServiceBus.Automatonymous.Activities
             Func<BehaviorContext<TInstance, TData>, DateTime> timeProvider)
             : this(schedule, timeProvider)
         {
-            _messageFactory = messageFactory;
+            _messageFactory = messageFactory ?? throw new ArgumentNullException(nameof(messageFactory));
         }
 
         /// <summary>
@@ -143,8 +143,8 @@ namespace NServiceBus.Automatonymous.Activities
 
         private ScheduleActivity(Schedule<TInstance> schedule, Func<BehaviorContext<TInstance, TData>, DateTime> timeProvider)
         {
-            _schedule = schedule;
-            _timeProvider = timeProvider;
+            _schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
+            _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         }
         
         /// <inheritdoc />
@@ -165,7 +165,6 @@ namespace NServiceBus.Automatonymous.Activities
         /// <inheritdoc />
         public Task Faulted<TException>(BehaviorExceptionContext<TInstance, TData, TException> context, Behavior<TInstance, TData> next) where TException : Exception
             => next.Faulted(context);
-        
 
         private async Task Execute(BehaviorContext<TInstance, TData> context)
         {

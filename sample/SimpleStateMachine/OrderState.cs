@@ -7,6 +7,6 @@ namespace SimpleStateMachine
     {
         public string CurrentState { get; set; }
         public Guid OrderId { get; set; }
-        public Guid CancelOrderId { get; set; }
+        public Guid? CancelOrderId { get; set; }
     }
 }

@@ -4,6 +4,11 @@ using NServiceBus.Automatonymous.Events;
 
 namespace NServiceBus.Automatonymous.Schedules
 {
+    /// <summary>
+    /// The schedule configurator.
+    /// </summary>
+    /// <typeparam name="TState">The state.</typeparam>
+    /// <typeparam name="TMessage">The message.</typeparam>
     public interface IScheduleConfigurator<TState, TMessage>
         where TState : class, IContainSagaData
         where TMessage : IMessage
@@ -18,14 +23,12 @@ namespace NServiceBus.Automatonymous.Schedules
         /// Set a dynamic message delay provider, which uses the instance to determine the delay
         /// unless overriden by the .Schedule method.
         /// </summary>
-        /// <footer><a href="https://www.google.com/search?q=Automatonymous.IScheduleConfigurator%602.DelayProvider">`IScheduleConfigurator.DelayProvider` on google.com</a></footer>
         Func<BehaviorContext<TState>, TimeSpan> DelayProvider { set; }
 
         /// <summary>
         /// Configure the behavior of the Received event, the same was Events are configured on
         /// the state machine.
         /// </summary>
-        /// <footer><a href="https://www.google.com/search?q=Automatonymous.IScheduleConfigurator%602.Received">`IScheduleConfigurator.Received` on google.com</a></footer>
         Action<IEventCorrelationConfigurator<TState, TMessage>> Received { set; } 
     }
 }

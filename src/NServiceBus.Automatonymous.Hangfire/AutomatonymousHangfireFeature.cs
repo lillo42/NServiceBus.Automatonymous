@@ -3,10 +3,13 @@
 namespace NServiceBus.Automatonymous.Hangfire
 {
     /// <summary>
-    /// 
+    /// The <see cref="Feature"/> to add Hangfire.
     /// </summary>
     public class AutomatonymousHangfireFeature : Feature
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public AutomatonymousHangfireFeature()
         {
             DependsOn<AutomatonymousFeature>();

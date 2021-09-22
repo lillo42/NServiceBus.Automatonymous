@@ -18,10 +18,10 @@ namespace NServiceBus.Automatonymous.Activities
         /// <summary>
         /// Initialize a new instance of <see cref="UnscheduleActivity{TInstance}"/>.
         /// </summary>
-        /// <param name="schedule">The <see cref="Schedule{TInstance"/>.</param>
+        /// <param name="schedule">The <see cref="Schedule{TInstance}"/>.</param>
         public UnscheduleActivity(Schedule<TInstance> schedule)
         {
-            _schedule = schedule;
+            _schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
         }
 
         /// <inheritdoc />

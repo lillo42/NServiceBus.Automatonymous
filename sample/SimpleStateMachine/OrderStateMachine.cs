@@ -16,6 +16,8 @@ namespace SimpleStateMachine
             InstanceState(x => x.CurrentState);
 
             Event(() => CompleteOrder);
+            
+            Schedule(() => CancelOrder2, state => state.CancelOrderId);
 
             Initially(When(SubmitOrder)
                 .Then(context =>
