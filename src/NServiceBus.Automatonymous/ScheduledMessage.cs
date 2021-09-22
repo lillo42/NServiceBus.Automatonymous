@@ -23,7 +23,6 @@ namespace NServiceBus.Automatonymous
     /// <summary>
     /// The scheduler message.
     /// </summary>
-    /// <typeparam name="T">The scheduler message.</typeparam>
     // ReSharper disable once InconsistentNaming
     public interface ScheduledMessage
     {

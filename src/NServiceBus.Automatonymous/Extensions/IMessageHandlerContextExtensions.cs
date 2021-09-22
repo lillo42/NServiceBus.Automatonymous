@@ -2,7 +2,7 @@ using System;
 
 namespace NServiceBus.Automatonymous.Extensions
 {
-    public static class IMessageHandlerContextExtensions
+    internal static class IMessageHandlerContextExtensions
     {
         public static Guid? GetSchedulingTokenId(this IMessageHandlerContext handlerContext)
         {

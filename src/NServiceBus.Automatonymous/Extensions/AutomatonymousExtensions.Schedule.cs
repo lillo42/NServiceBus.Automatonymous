@@ -429,11 +429,12 @@ namespace Automatonymous
             Schedule<TInstance> schedule)
             where TInstance : class, IContainSagaData =>
             source.Add(new UnscheduleActivity<TInstance>(schedule));
-        
+
         /// <summary>
         /// Unschedule a message, if the message was scheduled.
         /// </summary>
         /// <typeparam name="TInstance">The state machine data.</typeparam>
+        /// <typeparam name="TData">The data.</typeparam>
         /// <param name="source">The <see cref="EventActivityBinder{TInstance}"/>.</param>
         /// <param name="schedule">The scheduler config.</param>
         /// <returns>The <see cref="EventActivityBinder{TInstance}"/>.</returns>
