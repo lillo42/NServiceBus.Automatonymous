@@ -47,6 +47,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
             private readonly INamedTypeSymbol _eventSymbol;
             private readonly INamedTypeSymbol _startStateMachine;
             private readonly INamedTypeSymbol _timeoutEvent;
+            private readonly INamedTypeSymbol _schedulerEvent;
 
             public Parse(GeneratorExecutionContext executionContext)
             {
@@ -56,6 +57,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 _eventSymbol = _executionContext.Compilation.GetTypeByMetadataName("Automatonymous.Event`1")!;
                 _startStateMachine = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartStateMachineAttribute")!;
                 _timeoutEvent = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.TimeoutEventAttribute")!;
+                _schedulerEvent = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.Schedule`2")!;
             }
 
             private static DiagnosticDescriptor StartStateMachineAttributeNotFound { get; } = new DiagnosticDescriptor(
@@ -97,13 +99,15 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 var startByEvents = new List<PropertyDeclarationSyntax>();
                 var timeoutEvents = new List<PropertyDeclarationSyntax>();
                 var events = new List<PropertyDeclarationSyntax>();
+                var scheduler = new List<PropertyDeclarationSyntax>();
 
                 foreach (var propertyDeclarationSyntax in classDeclarationSyntax.Members
                     .Where(x => x.Kind() == SyntaxKind.PropertyDeclaration && x.Modifiers.Any(modifier => modifier.Kind() == SyntaxKind.PublicKeyword))
                     .Cast<PropertyDeclarationSyntax>())
                 {
-                    if (!DerivesFrom(propertyDeclarationSyntax.DescendantNodes().OfType<GenericNameSyntax>().FirstOrDefault(),
-                        _eventSymbol, compilationSemanticModel))
+                    var genericNameSyntax = propertyDeclarationSyntax.DescendantNodes().OfType<GenericNameSyntax>().FirstOrDefault();
+                    var isSchedulerMessage = DerivesFrom(genericNameSyntax, _schedulerEvent, compilationSemanticModel);
+                    if (!DerivesFrom(genericNameSyntax, _eventSymbol, compilationSemanticModel) && !isSchedulerMessage)
                     {
                         continue;
                     }
@@ -115,6 +119,10 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                     else if (HasAttribute(propertyDeclarationSyntax, _timeoutEvent, compilationSemanticModel))
                     {
                         timeoutEvents.Add(propertyDeclarationSyntax);
+                    }
+                    else if (isSchedulerMessage)
+                    {
+                        scheduler.Add(propertyDeclarationSyntax);
                     }
                     else
                     {
@@ -139,12 +147,17 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 var startByEventsGenericArgumentSymbol = startByEvents
                     .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
                     .ToList();
+                
                 var eventGenericArgumentSymbol = events
                     .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
                     .ToList();
                 
                 var timeoutEventsGenericArgumentSymbol = timeoutEvents
                     .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel))
+                    .ToList();
+                
+                var schedulersGenericArgumentSymbol = scheduler
+                    .Select(x => GetGenericParameterSymbol(x, compilationSemanticModel, 1))
                     .ToList();
                 
                 return new NServiceBusSagaClassBuilder()
@@ -173,7 +186,11 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 
                     .AddUsing(timeoutEventsGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
                     .AddInterfaces(timeoutEventsGenericArgumentSymbol.Select(x => $"IHandleTimeouts<{x!.Name}>"))
-                    .AddMethods(timeoutEvents.Zip(timeoutEventsGenericArgumentSymbol, CreateTimeoutHandler!));
+                    .AddMethods(timeoutEvents.Zip(timeoutEventsGenericArgumentSymbol, CreateTimeoutHandler!))
+
+                    .AddUsing(schedulersGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
+                    .AddInterfaces(schedulersGenericArgumentSymbol.Select(x => $"IHandleMessages<{x!.Name}>"))
+                    .AddMethods(scheduler.Zip(schedulersGenericArgumentSymbol, CreateScheduler!));
             }
             
             private static bool HasAttribute(SyntaxNode propertyDeclarationSyntax, ISymbol attribute, SemanticModel compilationSemanticModel)
@@ -212,6 +229,12 @@ namespace NServiceBus.Automatonymous.SourceGeneration
     return Execute(message, context, StateMachine.{propertyDeclarationSyntax.Identifier.Text});
 }}";
             
+            private static string CreateScheduler(PropertyDeclarationSyntax propertyDeclarationSyntax, ISymbol symbol)
+                => $@"public Task Handle({symbol.Name} message, IMessageHandlerContext context)
+{{
+    return Execute(message, context, StateMachine.{propertyDeclarationSyntax.Identifier.Text}.AnyReceived);
+}}";
+            
             private static bool DerivesFrom(BaseTypeDeclarationSyntax? classDeclarationSyntax, ISymbol extendedSymbol, 
                 SemanticModel compilationSemanticModel, [NotNullWhen(true)]out GenericNameSyntax? genericNameSyntax)
             {
@@ -246,10 +269,10 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                        extendedSymbol.Equals(candidate.ConstructedFrom, SymbolEqualityComparer.Default);
             }
 
-            private static ISymbol? GetGenericParameterSymbol(PropertyDeclarationSyntax propertyDeclarationSyntax, SemanticModel compilationSemanticModel)
+            private static ISymbol? GetGenericParameterSymbol(PropertyDeclarationSyntax propertyDeclarationSyntax, SemanticModel compilationSemanticModel, int argument = 0)
             {
                 var genericNameSyntax =  propertyDeclarationSyntax.DescendantNodes().OfType<GenericNameSyntax>().FirstOrDefault();
-                return genericNameSyntax == null ? null : compilationSemanticModel.GetSymbolInfo(genericNameSyntax.TypeArgumentList.Arguments[0]).Symbol;
+                return genericNameSyntax == null ? null : compilationSemanticModel.GetSymbolInfo(genericNameSyntax.TypeArgumentList.Arguments[argument]).Symbol;
             }
         }
     }
