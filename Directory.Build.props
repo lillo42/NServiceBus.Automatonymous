@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <AppTargetFramework Condition="$(AppTargetFramework) == ''">net6.0</AppTargetFramework>
+        <AppTargetFramework Condition="$(AppTargetFramework) == ''">net5.0</AppTargetFramework>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>

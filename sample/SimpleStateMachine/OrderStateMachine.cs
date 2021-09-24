@@ -17,7 +17,7 @@ namespace SimpleStateMachine
 
             Event(() => CompleteOrder);
             
-            Schedule(() => CancelOrder2, state => state.CancelOrderId);
+            // Schedule(() => CancelOrder2, state => state.CancelOrderId);
 
             Initially(When(SubmitOrder)
                 .Then(context =>
@@ -34,8 +34,6 @@ namespace SimpleStateMachine
                     })
                 .Then(context => context.GetPayload<ILog>().Info(@"Requesting a CancelOrder that will be executed in 30 seconds."))
                 .RequestTimeout(context => context.Init<CancelOrder>(), DateTime.UtcNow.AddSeconds(30))
-                .Schedule(CancelOrder2, context => context.Init<CancelOrder>(), TimeSpan.FromSeconds(30))
-                .Schedule(CancelOrder2, context => context.Init<CancelOrder>(), TimeSpan.FromSeconds(30))
                 .TransitionTo(OrderStarted));
             
             During(OrderStarted, When(CompleteOrder)
@@ -57,7 +55,7 @@ namespace SimpleStateMachine
         
         [TimeoutEvent]
         public Event<CancelOrder> CancelOrder { get; private set; } = null!;
-        public Schedule<OrderState, CancelOrder> CancelOrder2 { get; private set; } = null!;
+        // public Schedule<OrderState, CancelOrder> CancelOrder { get; private set; } = null!;
         
         public Event<CompleteOrder> CompleteOrder { get; private set; } = null!;
         

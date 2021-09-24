@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="Automatonymous" />
-        <PackageReference Include="Microsoft.CodeAnalysis" />
         <PackageReference Include="NServiceBus" />
     </ItemGroup>
 

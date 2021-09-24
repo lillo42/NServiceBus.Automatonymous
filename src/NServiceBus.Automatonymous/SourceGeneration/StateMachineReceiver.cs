@@ -6,7 +6,7 @@ namespace NServiceBus.Automatonymous.Generators
 {
     internal class StateMachineReceiver : ISyntaxReceiver
     {
-        public List<ClassDeclarationSyntax> CandidateClasses = new List<ClassDeclarationSyntax>();
+        public List<ClassDeclarationSyntax> CandidateClasses = new();
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
             if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax)

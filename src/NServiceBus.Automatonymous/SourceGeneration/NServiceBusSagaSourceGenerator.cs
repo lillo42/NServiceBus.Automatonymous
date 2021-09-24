@@ -24,7 +24,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
         /// <inheritdoc />
         public void Execute(GeneratorExecutionContext context)
         {
-            if (!(context.SyntaxReceiver is StateMachineReceiver receiver) || receiver.CandidateClasses.Count == 0)
+            if (context.SyntaxReceiver is not StateMachineReceiver receiver || receiver.CandidateClasses.Count == 0)
             {
                 return;
             }
@@ -38,9 +38,8 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                     context.AddSource($"{builder.Name}.generated.cs", builder.Build());
                 }
             }
-        }       
-        
-        
+        }
+
         private class Parse
         {
             private readonly GeneratorExecutionContext _executionContext;
@@ -58,7 +57,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 _startStateMachine = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.StartStateMachineAttribute")!;
                 _timeoutEvent = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.TimeoutEventAttribute")!;
             }
-            
+
             private static DiagnosticDescriptor StartStateMachineAttributeNotFound { get; } = new DiagnosticDescriptor(
                 id: "NSBA001",
                 title: "StartStateMachineAttribute not found.",
@@ -67,7 +66,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 defaultSeverity: DiagnosticSeverity.Error,
                 isEnabledByDefault: true);
             
-            private static DiagnosticDescriptor StateMachineShouldHaveOnlyOneConstructor { get; } = new DiagnosticDescriptor(
+            private static DiagnosticDescriptor StateMachineShouldHaveOnlyOneConstructor { get; } = new(
                 id: "NSBA002",
                 title: "StateMachine should have only one constructor.",
                 messageFormat: "StateMachine should have only one constructor for type '{0}'.",
@@ -75,7 +74,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 defaultSeverity: DiagnosticSeverity.Error,
                 isEnabledByDefault: true);
             
-            private static DiagnosticDescriptor StateMachineConstructorShouldBeParameterless { get; } = new DiagnosticDescriptor(
+            private static DiagnosticDescriptor StateMachineConstructorShouldBeParameterless { get; } = new(
                 id: "NSBA003",
                 title: "StateMachine constructor should be parameter less.",
                 messageFormat: "StateMachine constructor should be parameter less for type '{0}'.",
@@ -94,7 +93,6 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 {
                     return null;
                 }
-
 
                 var startByEvents = new List<PropertyDeclarationSyntax>();
                 var timeoutEvents = new List<PropertyDeclarationSyntax>();
@@ -132,6 +130,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
 
                 if (events.Count == 0)
                 {
+                    _executionContext.ReportDiagnostic(Diagnostic.Create(StartStateMachineAttributeNotFound, Location.None, classDeclarationSyntax.Identifier.Text));
                     return null;
                 }
 
@@ -161,7 +160,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                     .AddMethod($@"public {classDeclarationSyntax.Identifier.Text}NServiceBusSaga({classDeclarationSyntax.Identifier.Text} stateMachine, IBuilder builder)
   : base(stateMachine, builder)
 {{
-}}")
+}}") 
 
                     .AddUsing("NServiceBus")
                     .AddUsing(startByEventsGenericArgumentSymbol.Select(x => x!.ContainingNamespace.ToDisplayString()))
