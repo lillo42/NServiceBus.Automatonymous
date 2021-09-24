@@ -3,5 +3,6 @@
         <AppTargetFramework Condition="$(AppTargetFramework) == ''">net5.0</AppTargetFramework>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 </Project>

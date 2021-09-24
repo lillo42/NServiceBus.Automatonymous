@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\NServiceBus.Automatonymous\NServiceBus.Automatonymous.csproj" >
+      <OutputItemType>Analyzer</OutputItemType>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </ProjectReference>
