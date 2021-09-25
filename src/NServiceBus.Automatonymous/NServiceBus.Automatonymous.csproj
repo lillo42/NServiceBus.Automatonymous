@@ -30,6 +30,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NServiceBus" />
+    <PackageReference Include="NServiceBus.UniformSession" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,5 @@
 using System;
 using Automatonymous;
-using MassTransit;
 
 namespace TestProject1
 {
@@ -31,12 +30,12 @@ namespace TestProject1
     {
         public OrderSaga()
         {
+            Schedule(() => OrderCompletionTimeout, x => x.OrderCompletionTimeoutId,
+                x =>
+                {
+                    x.DelayProvider = _ => TimeSpan.Zero;
+                });
             
-             //Schedule<OrderCompletionTimeoutExpired>(OrderCompletionTimeout, x => x.OrderCompletionTimeoutId,
-                        //     x =>
-                        //     {
-                        //         
-                        //     });
             Initially(
                 When(SubmitOrder)
                     .Then(x => x.Instance.OrderDate = x.Data.OrderDate)
@@ -61,8 +60,8 @@ namespace TestProject1
         public Event<OrderAccepted> OrderAccepted { get; private set; } = null!;
         public State Submitted { get; private set; } = null!;
         public State Accepted { get; private set; } = null!;
-        
-        public Schedule<OrderData, OrderCompletionTimeoutExpired> OrderCompletionTimeout { get; private set; }
+
+        public Schedule<OrderData, OrderCompletionTimeoutExpired> OrderCompletionTimeout { get; private set; } = null!;
     }
     
     public class OrderCompletionTimeoutExpired

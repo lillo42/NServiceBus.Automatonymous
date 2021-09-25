@@ -30,9 +30,9 @@ namespace NServiceBus.Automatonymous
         /// <inheritdoc />
         protected override void Setup(FeatureConfigurationContext context)
         {
-            context.Container.ConfigureComponent<DefaultMessageSchedulerContext>(DependencyLifecycle.SingleInstance);
-            context.Container.ConfigureComponent<IMessageScheduler>(provider => provider.Build<DefaultMessageSchedulerContext>(), DependencyLifecycle.SingleInstance);
-            context.Container.ConfigureComponent<MessageSchedulerContext>(provider => provider.Build<DefaultMessageSchedulerContext>(), DependencyLifecycle.SingleInstance);
+            context.Container.ConfigureComponent<DefaultMessageSchedulerContext>(DependencyLifecycle.InstancePerUnitOfWork);
+            context.Container.ConfigureComponent<IMessageScheduler>(provider => provider.Build<DefaultMessageSchedulerContext>(), DependencyLifecycle.InstancePerUnitOfWork);
+            context.Container.ConfigureComponent<MessageSchedulerContext>(provider => provider.Build<DefaultMessageSchedulerContext>(), DependencyLifecycle.InstancePerUnitOfWork);
             
             foreach (var stateMachineType in context.Settings.GetAvailableTypes().Where(IsNServiceBusStateMachine))
             {

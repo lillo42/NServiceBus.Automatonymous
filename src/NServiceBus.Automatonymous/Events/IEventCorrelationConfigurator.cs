@@ -17,6 +17,13 @@ namespace NServiceBus.Automatonymous.Events
         /// <param name="propertyExpression">The CorrelationId from the event data.</param>
         /// <returns>The <see cref="IEventCorrelationConfigurator{TState,TMessage}"/>.</returns>
         IEventCorrelationConfigurator<TState, TMessage> CorrelateBy(Expression<Func<TMessage, object>> propertyExpression);
+
+        /// <summary>
+        /// Correlate to the saga instance by header, using the id from the event data.
+        /// </summary>
+        /// <param name="header">The correlation header.</param>
+        /// <returns>The <see cref="IEventCorrelationConfigurator{TState,TMessage}"/>.</returns>
+        IEventCorrelationConfigurator<TState, TMessage> CorrelateByHeader(string header);
         
         /// <summary>
         /// Configure how the <typeparamref name="TMessage"/> will find saga's data.

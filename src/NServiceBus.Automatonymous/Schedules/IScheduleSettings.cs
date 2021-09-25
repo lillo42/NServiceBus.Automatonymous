@@ -9,7 +9,7 @@ namespace NServiceBus.Automatonymous.Schedules
     /// </summary>
     public interface IScheduleSettings<TInstance, TMessage>
         where TInstance : class, IContainSagaData
-        where TMessage : class
+        where TMessage : class, IMessage
     {
         /// <summary>
         /// Provides the delay for the message.

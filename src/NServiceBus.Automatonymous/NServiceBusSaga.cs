@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Automatonymous;
@@ -39,22 +37,13 @@ namespace NServiceBus.Automatonymous
             _builder = builder;
         }
 
-        private static readonly FieldInfo ConfigureHowToFindSagaWithMessage = typeof(SagaPropertyMapper<TState>)
-            .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Default)
-            .First(x => x.FieldType == typeof(IConfigureHowToFindSagaWithMessage));
-
-        // ReSharper disable once StaticMemberInGenericType
-        private static readonly MethodInfo ConfigureMapping = typeof(IConfigureHowToFindSagaWithMessage)
-            .GetMethod(nameof(IConfigureHowToFindSagaWithMessage.ConfigureMapping))!;
-        
         /// <inheritdoc />
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<TState> mapper)
         {
-            var configureHowToFindSagaWithMessage = ConfigureHowToFindSagaWithMessage.GetValue(mapper);
-            foreach (var correlation in new TStateMachine().Correlations.Where(x => x.CorrelateByProperty != null))
+            var stateMachine = new TStateMachine();
+            foreach (var correlation in stateMachine.Correlations)
             {
-                var genericMethod = ConfigureMapping.MakeGenericMethod(typeof(TState), correlation.MessageType);
-                genericMethod.Invoke(configureHowToFindSagaWithMessage, new[] { correlation.HowToFindSagaWithMessage, correlation.CorrelateByProperty });
+                correlation.Map(mapper);
             }
         }
         
@@ -68,7 +57,8 @@ namespace NServiceBus.Automatonymous
         protected async Task Execute<T>(T message, IMessageHandlerContext context, Event<T> @event)
         {
             var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, 
-                new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()), CancellationToken.None);
+                new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()),
+                CancellationToken.None);
             eventContext.GetOrAddPayload(() => context);
             eventContext.GetOrAddPayload(() => Log);
             eventContext.GetOrAddPayload(() => new SagaType(GetType()));

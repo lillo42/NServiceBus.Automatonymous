@@ -2,7 +2,6 @@ using System;
 using System.Linq.Expressions;
 using Automatonymous;
 using GreenPipes;
-using NServiceBus;
 using NServiceBus.Automatonymous;
 using NServiceBus.Logging;
 
@@ -14,6 +13,11 @@ namespace SimpleStateMachine
         {
             InstanceState(x => x.CurrentState);
 
+            Event(() => SubmitOrder, x =>
+            {
+                x.HowToFindSagaData(y => y.CurrentState);
+            });
+            
             Event(() => CompleteOrder);
             
             Schedule(() => CancelOrder, state => state.CancelOrderId);
@@ -59,4 +63,27 @@ namespace SimpleStateMachine
         public Event<CompleteOrder> CompleteOrder { get; private set; } = null!;
         
     }
+    
+    // public class OrderStateMachineNServiceBusSaga2 : NServiceBusSaga<OrderStateMachine, OrderState>, IAmStartedByMessages<StartOrder>,
+    //     IHandleMessages<CompleteOrder>,
+    //     IHandleMessages<CancelOrder>
+    // {
+    //     public OrderStateMachineNServiceBusSaga2(OrderStateMachine stateMachine, IBuilder builder)
+    //         : base(stateMachine, builder)
+    //     {
+    //     }
+    //     
+    //     public Task Handle(StartOrder message, IMessageHandlerContext context)
+    //     {
+    //         return Execute(message, context, StateMachine.SubmitOrder);
+    //     }
+    //     public Task Handle(CompleteOrder message, IMessageHandlerContext context)
+    //     {
+    //         return Execute(message, context, StateMachine.CompleteOrder);
+    //     }
+    //     public Task Handle(CancelOrder message, IMessageHandlerContext context)
+    //     {
+    //         return Execute(message, context, StateMachine.CancelOrder.AnyReceived);
+    //     }
+    // }
 }

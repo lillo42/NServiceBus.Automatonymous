@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus.Automatonymous.Imp;
 using NServiceBus.Automatonymous.Schedules.Internals;
+using NServiceBus.UniformSession;
 
 namespace NServiceBus.Automatonymous.Schedules
 {
@@ -15,16 +16,16 @@ namespace NServiceBus.Automatonymous.Schedules
     public class DefaultMessageSchedulerContext : MessageSchedulerContext
     {
         private readonly IMessageCreator _messageCreator;
-        private readonly IMessageSession _messageSession;
+        private readonly IUniformSession _session;
 
         /// <summary>
         /// Initialize a new instance of <see cref="DefaultMessageSchedulerContext"/>.
         /// </summary>
-        /// <param name="messageSession">The <see cref="IMessageSession"/>.</param>
+        /// <param name="session">The <see cref="IMessageSession"/>.</param>
         /// <param name="messageCreator">The <see cref="IMessageCreator"/>.</param>
-        public DefaultMessageSchedulerContext(IMessageSession messageSession, IMessageCreator messageCreator)
+        public DefaultMessageSchedulerContext(IUniformSession session, IMessageCreator messageCreator)
         {
-            _messageSession = messageSession;
+            _session = session;
             _messageCreator = messageCreator;
         }
 
@@ -42,7 +43,7 @@ namespace NServiceBus.Automatonymous.Schedules
             
             var payload = _messageCreator.CreateInstance<T>();
             
-            await _messageSession.Send(payload, options).ConfigureAwait(false);
+            await _session.Send(payload, options).ConfigureAwait(false);
             return new DefaultScheduledMessage<T>(id, scheduledTime, payload);
         }
 
@@ -58,7 +59,7 @@ namespace NServiceBus.Automatonymous.Schedules
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             options.RouteReplyTo(destinationAddress);
             
-            await _messageSession.Send(message, options).ConfigureAwait(false);
+            await _session.Send(message, options).ConfigureAwait(false);
             return new DefaultScheduledMessage(id, scheduledTime, message, message.GetType());
         }
 
@@ -71,11 +72,12 @@ namespace NServiceBus.Automatonymous.Schedules
             var options = new SendOptions();
             options.DoNotDeliverBefore(scheduledTime);
             options.SetMessageId(id.ToString());
+            options.RouteToThisEndpoint();
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             
             var payload = _messageCreator.CreateInstance<T>();
             
-            await _messageSession.Send(payload, options).ConfigureAwait(false);
+            await _session.Send(payload, options).ConfigureAwait(false);
             return new DefaultScheduledMessage<T>(id, scheduledTime, payload);
         }
 
@@ -89,7 +91,7 @@ namespace NServiceBus.Automatonymous.Schedules
             options.SetMessageId(id.ToString());
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             
-            await _messageSession.Send(message, options).ConfigureAwait(false);
+            await _session.Send(message, options).ConfigureAwait(false);
             return new DefaultScheduledMessage(id, scheduledTime, message, message.GetType());
         }
         
@@ -111,7 +113,7 @@ namespace NServiceBus.Automatonymous.Schedules
                 PayloadType = message.GetType()
             };
             
-            await _messageSession.Send(delay, options).ConfigureAwait(false);
+            await _session.Send(delay, options).ConfigureAwait(false);
             return new DefaultScheduledMessage<T>(id, scheduledTime, message);
         }
 
@@ -130,7 +132,7 @@ namespace NServiceBus.Automatonymous.Schedules
                 PayloadType = message.GetType()
             };
             
-            await _messageSession.Send(delay, options).ConfigureAwait(false);
+            await _session.Send(delay, options).ConfigureAwait(false);
             return new DefaultScheduledMessage(id, scheduledTime, message, message.GetType());
         }
 

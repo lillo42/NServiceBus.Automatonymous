@@ -6,6 +6,7 @@ using Automatonymous;
 using GreenPipes;
 using GreenPipes.Internals.Extensions;
 using NServiceBus.Automatonymous.Events;
+using NServiceBus.Automatonymous.Events.Imp;
 using NServiceBus.Automatonymous.Extensions;
 using NServiceBus.Automatonymous.Schedules;
 using NServiceBus.Logging;
@@ -116,7 +117,6 @@ namespace NServiceBus.Automatonymous
             Expression<Func<TProperty, Event<T>>> eventPropertyExpression,
             Action<IEventCorrelationConfigurator<TState, T>> configureEventCorrelation)
             where TProperty : class
-            where T : class
         {
             base.Event(propertyExpression, eventPropertyExpression);
 
@@ -228,42 +228,32 @@ namespace NServiceBus.Automatonymous
             InitializeSchedule(this, property, schedule);
             
             Event(propertyExpression, x => x.Received);
-
-            if (settings.Received == null)
-            {
-                Event(propertyExpression, x => x.AnyReceived);
-            }
-            else
-            {                   
-                Event(propertyExpression, x => x.AnyReceived, x =>
-                {
-                    settings.Received(x);
-                });
-            }
             
-            DuringAny(
-                When(schedule.AnyReceived)
-                    .ThenAsync(async context =>
-                    {
-                        var tokenId = schedule.GetTokenId(context.Instance);
-                        if (context.TryGetPayload(out IMessageHandlerContext handler))
-                        {
-                            var messageTokenId = handler.GetSchedulingTokenId();
-                            if(messageTokenId.HasValue && (!tokenId.HasValue || messageTokenId.Value != tokenId.Value))
-                            {
-                                context.GetPayload<ILog>()
-                                    .DebugFormat("SAGA: {0} Scheduled message not current: {1}", handler.MessageHeaders[Headers.SagaId], messageTokenId.Value);
-                                return;
-                            }
-                        }
+            Event(propertyExpression, x => x.AnyReceived, x => settings.Received?.Invoke(x));
 
-                        var eventContext = context.GetProxy(schedule.Received, context.Data);
-                        await ((StateMachine<TState>)this).RaiseEvent(eventContext).ConfigureAwait(false);
-                        if (schedule.GetTokenId(context.Instance) == tokenId)
+            DuringAny(
+            When(schedule.AnyReceived)
+                .ThenAsync(async context =>
+                {
+                    var tokenId = schedule.GetTokenId(context.Instance);
+                    if (context.TryGetPayload(out IMessageHandlerContext handler))
+                    {
+                        var messageTokenId = handler.GetSchedulingTokenId();
+                        if(messageTokenId.HasValue && (!tokenId.HasValue || messageTokenId.Value != tokenId.Value))
                         {
-                            schedule.SetTokenId(context.Instance, default);
+                            context.GetPayload<ILog>()
+                                .DebugFormat("SAGA: {0} Scheduled message not current: {1}", handler.MessageHeaders[Headers.SagaId], messageTokenId.Value);
+                            return;
                         }
-                    }));
+                    }
+
+                    var eventContext = context.GetProxy(schedule.Received, context.Data);
+                    await ((StateMachine<TState>)this).RaiseEvent(eventContext).ConfigureAwait(false);
+                    if (schedule.GetTokenId(context.Instance) == tokenId)
+                    {
+                        schedule.SetTokenId(context.Instance, default);
+                    }
+                }));
             
             static void InitializeSchedule(NServiceBusStateMachine<TState> stateMachine, PropertyInfo property, Schedule<TState, TMessage> schedule)
             {

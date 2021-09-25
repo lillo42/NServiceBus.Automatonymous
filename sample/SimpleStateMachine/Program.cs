@@ -12,7 +12,8 @@ namespace SimpleStateMachine
             
             endpointConfiguration.UsePersistence<LearningPersistence>();
             endpointConfiguration.UseTransport<LearningTransport>();
-            
+            endpointConfiguration.EnableUniformSession();
+
             var endpointInstance = await Endpoint.Start(endpointConfiguration)
                 .ConfigureAwait(false);
 

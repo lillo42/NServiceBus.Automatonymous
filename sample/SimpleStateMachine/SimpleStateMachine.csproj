@@ -11,6 +11,7 @@
     <PackageReference Include="Automatonymous" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
     <PackageReference Include="NServiceBus" />
+    <PackageReference Include="NServiceBus.UniformSession" />
   </ItemGroup>
 
   <ItemGroup>

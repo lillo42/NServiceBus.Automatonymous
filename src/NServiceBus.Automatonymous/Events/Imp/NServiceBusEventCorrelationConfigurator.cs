@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace NServiceBus.Automatonymous.Events
+namespace NServiceBus.Automatonymous.Events.Imp
 {
     /// <summary>
     /// Implementation of <see cref="IEventCorrelationConfigurator{TState,TMessage}"/>.
@@ -34,6 +34,14 @@ namespace NServiceBus.Automatonymous.Events
             return this;
         }
 
+        private string? _header;
+        /// <inheritdoc />
+        public IEventCorrelationConfigurator<TState, TMessage> CorrelateByHeader(string header)
+        {
+            _header = header;
+            return this;
+        }
+
         private Expression<Func<TState, object>> _howToFindSagaWithMessage;
         
         /// <inheritdoc />
@@ -59,8 +67,9 @@ namespace NServiceBus.Automatonymous.Events
         /// </summary>
         /// <returns>Return new instance of <see cref="NServiceBusEventCorrelation{TState,TMessage}"/>.</returns>
         public NServiceBusEventCorrelation<TState, TMessage> Build()
-            => new NServiceBusEventCorrelation<TState, TMessage>(_correlateByProperty,
+            => new(_correlateByProperty,
                 _howToFindSagaWithMessage,
-                _onMissingSaga);
+                _onMissingSaga, 
+                _header);
     }
 }
