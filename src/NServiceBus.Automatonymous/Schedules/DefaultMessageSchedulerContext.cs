@@ -15,18 +15,15 @@ namespace NServiceBus.Automatonymous.Schedules
     /// </remarks>
     public class DefaultMessageSchedulerContext : MessageSchedulerContext
     {
-        private readonly IMessageCreator _messageCreator;
         private readonly IUniformSession _session;
 
         /// <summary>
         /// Initialize a new instance of <see cref="DefaultMessageSchedulerContext"/>.
         /// </summary>
         /// <param name="session">The <see cref="IMessageSession"/>.</param>
-        /// <param name="messageCreator">The <see cref="IMessageCreator"/>.</param>
-        public DefaultMessageSchedulerContext(IUniformSession session, IMessageCreator messageCreator)
+        public DefaultMessageSchedulerContext(IUniformSession session)
         {
             _session = session;
-            _messageCreator = messageCreator;
         }
 
         /// <inheritdoc />
@@ -37,14 +34,11 @@ namespace NServiceBus.Automatonymous.Schedules
             
             var options = new SendOptions();
             options.DoNotDeliverBefore(scheduledTime);
-            options.SetMessageId(id.ToString());
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             options.RouteReplyTo(destinationAddress);
             
-            var payload = _messageCreator.CreateInstance<T>();
-            
-            await _session.Send(payload, options).ConfigureAwait(false);
-            return new DefaultScheduledMessage<T>(id, scheduledTime, payload);
+            await _session.Send(message, options).ConfigureAwait(false);
+            return new DefaultScheduledMessage<T>(id, scheduledTime, message);
         }
 
         /// <inheritdoc />
@@ -55,7 +49,6 @@ namespace NServiceBus.Automatonymous.Schedules
             
             var options = new SendOptions();
             options.DoNotDeliverBefore(scheduledTime);
-            options.SetMessageId(id.ToString());
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             options.RouteReplyTo(destinationAddress);
             
@@ -71,14 +64,11 @@ namespace NServiceBus.Automatonymous.Schedules
             
             var options = new SendOptions();
             options.DoNotDeliverBefore(scheduledTime);
-            options.SetMessageId(id.ToString());
             options.RouteToThisEndpoint();
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             
-            var payload = _messageCreator.CreateInstance<T>();
-            
-            await _session.Send(payload, options).ConfigureAwait(false);
-            return new DefaultScheduledMessage<T>(id, scheduledTime, payload);
+            await _session.Send(message, options).ConfigureAwait(false);
+            return new DefaultScheduledMessage<T>(id, scheduledTime, message);
         }
 
         /// <inheritdoc />
@@ -88,7 +78,6 @@ namespace NServiceBus.Automatonymous.Schedules
             
             var options = new SendOptions();
             options.DoNotDeliverBefore(scheduledTime);
-            options.SetMessageId(id.ToString());
             options.SetHeader(MessageHeaders.SchedulingTokenId, id.ToString());
             
             await _session.Send(message, options).ConfigureAwait(false);

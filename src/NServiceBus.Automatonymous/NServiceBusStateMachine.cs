@@ -228,9 +228,10 @@ namespace NServiceBus.Automatonymous
             InitializeSchedule(this, property, schedule);
             
             Event(propertyExpression, x => x.Received);
-            
             Event(propertyExpression, x => x.AnyReceived, x => settings.Received?.Invoke(x));
 
+            _events[typeof(TMessage)] = schedule.AnyReceived;
+            
             DuringAny(
             When(schedule.AnyReceived)
                 .ThenAsync(async context =>

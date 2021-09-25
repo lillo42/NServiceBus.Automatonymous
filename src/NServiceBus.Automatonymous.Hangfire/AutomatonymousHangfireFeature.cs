@@ -19,9 +19,9 @@ namespace NServiceBus.Automatonymous.Hangfire
         /// <inheritdoc />
         protected override void Setup(FeatureConfigurationContext context)
         {
-            context.Container.RegisterSingleton(new HangfireMessageSchedulerContext());
-            context.Container.ConfigureComponent<IMessageScheduler>(provider => provider.Build<HangfireMessageSchedulerContext>(), DependencyLifecycle.SingleInstance);
-            context.Container.ConfigureComponent<MessageSchedulerContext>(provider => provider.Build<HangfireMessageSchedulerContext>(), DependencyLifecycle.SingleInstance);
+            context.Container.ConfigureComponent<HangfireMessageSchedulerContext>(DependencyLifecycle.InstancePerUnitOfWork);
+            context.Container.ConfigureComponent<IMessageScheduler>(provider => provider.Build<HangfireMessageSchedulerContext>(), DependencyLifecycle.InstancePerUnitOfWork);
+            context.Container.ConfigureComponent<MessageSchedulerContext>(provider => provider.Build<HangfireMessageSchedulerContext>(), DependencyLifecycle.InstancePerUnitOfWork);
         }
     }
 }

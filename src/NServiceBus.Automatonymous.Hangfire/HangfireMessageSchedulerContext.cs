@@ -12,6 +12,18 @@ namespace NServiceBus.Automatonymous.Hangfire
     /// </summary>
     public class HangfireMessageSchedulerContext : MessageSchedulerContext
     {
+        private IMessageHandlerContext _context;
+
+        /// <summary>
+        /// Initialize new instance of <see cref="HangfireMessageSchedulerContext"/>.
+        /// </summary>
+        /// <param name="wrapper">The <see cref="MessageHandlerContextWrapper"/>.</param>
+        /// <exception cref="ArgumentException"></exception>
+        public HangfireMessageSchedulerContext(MessageHandlerContextWrapper wrapper)
+        {
+            _context = wrapper.MessageHandlerContext ?? throw new ArgumentNullException(nameof(wrapper));
+        }
+        
         /// <inheritdoc />
         public Task<ScheduledMessage<T>> ScheduleSendAsync<T>(string destinationAddress, DateTime scheduledTime, T message, CancellationToken cancellationToken = default) where T : class
         {
@@ -29,14 +41,14 @@ namespace NServiceBus.Automatonymous.Hangfire
         /// <inheritdoc />
         public Task<ScheduledMessage<T>> ScheduleSendAsync<T>(DateTime scheduledTime, T message, CancellationToken cancellationToken = default) where T : class
         {
-            var jobId = BackgroundJob.Schedule<SendMessageSchedulerJob>(x => x.Execute(message, null), scheduledTime);
+            var jobId = BackgroundJob.Schedule<SendMessageSchedulerJob>(x => x.Execute(message, _context.ReplyToAddress), scheduledTime);
             return Task.FromResult<ScheduledMessage<T>>(new DefaultScheduledMessage<T>(Guid.Parse(jobId), scheduledTime, message));
         }
 
         /// <inheritdoc />
         public Task<ScheduledMessage> ScheduleSendAsync(DateTime scheduledTime, object message, CancellationToken cancellationToken = default)
         {
-            var jobId = BackgroundJob.Schedule<SendMessageSchedulerJob>(x => x.Execute(message, null), scheduledTime);
+            var jobId = BackgroundJob.Schedule<SendMessageSchedulerJob>(x => x.Execute(message, _context.ReplyToAddress), scheduledTime);
             return Task.FromResult<ScheduledMessage>(new DefaultScheduledMessage(Guid.Parse(jobId), scheduledTime, message, message.GetType()));
         }
 

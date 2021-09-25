@@ -59,6 +59,7 @@ namespace NServiceBus.Automatonymous
             var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, 
                 new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()),
                 CancellationToken.None);
+            _builder.Build<MessageHandlerContextWrapper>().MessageHandlerContext = context;
             eventContext.GetOrAddPayload(() => context);
             eventContext.GetOrAddPayload(() => Log);
             eventContext.GetOrAddPayload(() => new SagaType(GetType()));

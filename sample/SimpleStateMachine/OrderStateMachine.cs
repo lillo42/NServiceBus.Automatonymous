@@ -13,14 +13,12 @@ namespace SimpleStateMachine
         {
             InstanceState(x => x.CurrentState);
 
-            Event(() => SubmitOrder, x =>
-            {
-                x.HowToFindSagaData(y => y.CurrentState);
-            });
-            
             Event(() => CompleteOrder);
             
-            Schedule(() => CancelOrder, state => state.CancelOrderId);
+            Schedule(() => CancelOrder, state => state.CancelOrderId, x =>
+            {
+                x.Received = cfg => cfg.CorrelateBy(y => y.OrderId);
+            });
 
             Initially(When(SubmitOrder)
                 .Then(context =>
@@ -36,7 +34,7 @@ namespace SimpleStateMachine
                 //         opt.RouteToThisEndpoint();
                 //     })
                 .Then(context => context.GetPayload<ILog>().Info("Requesting a CancelOrder that will be executed in 30 seconds."))
-                .Schedule(CancelOrder,_ => new CancelOrder(), DateTime.UtcNow.AddSeconds(30))
+                .Schedule(CancelOrder,context => new CancelOrder { OrderId = context.Instance.OrderId }, DateTime.UtcNow.AddSeconds(30))
                 .TransitionTo(OrderStarted));
             
             During(OrderStarted, When(CompleteOrder)
