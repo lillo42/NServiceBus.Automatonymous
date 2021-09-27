@@ -60,7 +60,7 @@ namespace NServiceBus.Automatonymous.SourceGeneration
                 _schedulerEvent = _executionContext.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.Schedule`2")!;
             }
 
-            private static DiagnosticDescriptor StartStateMachineAttributeNotFound { get; } = new DiagnosticDescriptor(
+            private static DiagnosticDescriptor StartStateMachineAttributeNotFound { get; } = new(
                 id: "NSBA001",
                 title: "StartStateMachineAttribute not found.",
                 messageFormat: "StartStateMachineAttribute not found for type '{0}'.",

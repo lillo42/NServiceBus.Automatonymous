@@ -8,7 +8,6 @@ namespace Trashlantis.StateMachines
 {
     public class TrashRemovalStateMachine : NServiceBusStateMachine<TrashRemovalState>
     {
-
         public TrashRemovalStateMachine()
         {
             InstanceState(x => x.CurrentState, Requested);
