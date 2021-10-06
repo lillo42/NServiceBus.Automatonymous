@@ -22,6 +22,8 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 	GitVersion.yml = GitVersion.yml
 	global.json = global.json
+	Directory.Build.props = Directory.Build.props
+	Directory.Packages.props = Directory.Packages.props
 EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{9F123120-54A7-4335-A5E4-153B4B3859EA}"
