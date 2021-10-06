@@ -8,85 +8,84 @@ using NServiceBus.Logging;
 using NServiceBus.ObjectBuilder;
 using NServiceBus.Sagas;
 
-namespace NServiceBus.Automatonymous
+namespace NServiceBus.Automatonymous;
+
+/// <summary>
+/// The base <see cref="Saga{TSagaData}"/>. 
+/// </summary>
+/// <typeparam name="TStateMachine">The <see cref="NServiceBusStateMachine{TState}"/>.</typeparam>
+/// <typeparam name="TState">The <see cref="IContainSagaData"/>.</typeparam>
+public abstract class NServiceBusSaga<TStateMachine, TState> : Saga<TState>, IHandleSagaNotFound
+    where TStateMachine : NServiceBusStateMachine<TState>, new()
+    where TState : class, IContainSagaData, new()
 {
+    // ReSharper disable once StaticMemberInGenericType
+    private static readonly ILog? Log = LogManager.GetLogger(typeof(TStateMachine));
+        
     /// <summary>
-    /// The base <see cref="Saga{TSagaData}"/>. 
+    /// The <typeparamref name="TStateMachine" />.
     /// </summary>
-    /// <typeparam name="TStateMachine">The <see cref="NServiceBusStateMachine{TState}"/>.</typeparam>
-    /// <typeparam name="TState">The <see cref="IContainSagaData"/>.</typeparam>
-    public abstract class NServiceBusSaga<TStateMachine, TState> : Saga<TState>, IHandleSagaNotFound
-        where TStateMachine : NServiceBusStateMachine<TState>, new()
-        where TState : class, IContainSagaData, new()
+    protected TStateMachine StateMachine { get; }
+    private readonly IBuilder _builder;
+        
+    /// <summary>
+    /// Initialize <see cref="NServiceBusSaga{TStateMachine,TState}" />.
+    /// </summary>
+    /// <param name="stateMachine">The <see cref="NServiceBusStateMachine{TState}" />.</param>
+    /// <param name="builder">The <see cref="IBuilder" />.</param>
+    protected NServiceBusSaga(TStateMachine stateMachine, IBuilder builder)
     {
-        // ReSharper disable once StaticMemberInGenericType
-        private static readonly ILog? Log = LogManager.GetLogger(typeof(TStateMachine));
-        
-        /// <summary>
-        /// The <typeparamref name="TStateMachine" />.
-        /// </summary>
-        protected TStateMachine StateMachine { get; }
-        private readonly IBuilder _builder;
-        
-        /// <summary>
-        /// Initialize <see cref="NServiceBusSaga{TStateMachine,TState}" />.
-        /// </summary>
-        /// <param name="stateMachine">The <see cref="NServiceBusStateMachine{TState}" />.</param>
-        /// <param name="builder">The <see cref="IBuilder" />.</param>
-        protected NServiceBusSaga(TStateMachine stateMachine, IBuilder builder)
-        {
-            StateMachine = stateMachine;
-            _builder = builder;
-        }
+        StateMachine = stateMachine;
+        _builder = builder;
+    }
 
-        private static readonly FieldInfo ConfigureHowToFindSagaWithMessage = typeof(SagaPropertyMapper<TState>)
-            .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Default)
-            .First(x => x.FieldType == typeof(IConfigureHowToFindSagaWithMessage));
+    private static readonly FieldInfo ConfigureHowToFindSagaWithMessage = typeof(SagaPropertyMapper<TState>)
+        .GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Default)
+        .First(x => x.FieldType == typeof(IConfigureHowToFindSagaWithMessage));
 
-        // ReSharper disable once StaticMemberInGenericType
-        private static readonly MethodInfo ConfigureMapping = typeof(IConfigureHowToFindSagaWithMessage)
-            .GetMethod(nameof(IConfigureHowToFindSagaWithMessage.ConfigureMapping))!;
+    // ReSharper disable once StaticMemberInGenericType
+    private static readonly MethodInfo ConfigureMapping = typeof(IConfigureHowToFindSagaWithMessage)
+        .GetMethod(nameof(IConfigureHowToFindSagaWithMessage.ConfigureMapping))!;
         
-        /// <inheritdoc />
-        protected override void ConfigureHowToFindSaga(SagaPropertyMapper<TState> mapper)
+    /// <inheritdoc />
+    protected override void ConfigureHowToFindSaga(SagaPropertyMapper<TState> mapper)
+    {
+        var configureHowToFindSagaWithMessage = ConfigureHowToFindSagaWithMessage.GetValue(mapper);
+        foreach (var correlation in new TStateMachine().Correlations.Where(x => x.CorrelateByProperty != null))
         {
-            var configureHowToFindSagaWithMessage = ConfigureHowToFindSagaWithMessage.GetValue(mapper);
-            foreach (var correlation in new TStateMachine().Correlations.Where(x => x.CorrelateByProperty != null))
-            {
-                var genericMethod = ConfigureMapping.MakeGenericMethod(typeof(TState), correlation.MessageType);
-                genericMethod.Invoke(configureHowToFindSagaWithMessage, new[] { correlation.HowToFindSagaWithMessage, correlation.CorrelateByProperty });
-            }
+            var genericMethod = ConfigureMapping.MakeGenericMethod(typeof(TState), correlation.MessageType);
+            genericMethod.Invoke(configureHowToFindSagaWithMessage, new[] { correlation.HowToFindSagaWithMessage, correlation.CorrelateByProperty });
         }
+    }
         
-        /// <summary>
-        /// Execute message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="context">The <see cref="IMessageHandlerContext" />.</param>
-        /// <param name="event">The <see cref="Event{TData}"/>.</param>
-        /// <typeparam name="T">The message type.</typeparam>
-        protected async Task Execute<T>(T message, IMessageHandlerContext context, Event<T> @event)
-        {
-            var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, 
-                new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()), CancellationToken.None);
-            eventContext.GetOrAddPayload(() => context);
-            eventContext.GetOrAddPayload(() => Log);
-            eventContext.GetOrAddPayload(() => new SagaType(GetType()));
-            await ((StateMachine<TState>) StateMachine).RaiseEvent(eventContext);
+    /// <summary>
+    /// Execute message.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <param name="context">The <see cref="IMessageHandlerContext" />.</param>
+    /// <param name="event">The <see cref="Event{TData}"/>.</param>
+    /// <typeparam name="T">The message type.</typeparam>
+    protected async Task Execute<T>(T message, IMessageHandlerContext context, Event<T> @event)
+    {
+        var eventContext = new NServiceBusStateMachineEventContext<TState, T>(StateMachine, Data, @event, message, 
+            new BuilderPayloadCache(_builder,  AutomatonymousFeature.Container, new ListPayloadCache()), CancellationToken.None);
+        eventContext.GetOrAddPayload(() => context);
+        eventContext.GetOrAddPayload(() => Log);
+        eventContext.GetOrAddPayload(() => new SagaType(GetType()));
+        await ((StateMachine<TState>) StateMachine).RaiseEvent(eventContext);
 
-            var state = await StateMachine.GetState(Data);
-            // ReSharper disable once PossibleUnintendedReferenceComparison
-            if (state == StateMachine.Final)
-            {
-                MarkAsComplete();
-            }
-        }
-
-        /// <inheritdoc />
-        public Task Handle(object message, IMessageProcessingContext context)
+        var state = await StateMachine.GetState(Data);
+        // ReSharper disable once PossibleUnintendedReferenceComparison
+        if (state == StateMachine.Final)
         {
-            var correlations = StateMachine.GetCorrelations(message.GetType());
-            return correlations.OnMissingSaga?.Invoke(message, context)!;
+            MarkAsComplete();
         }
+    }
+
+    /// <inheritdoc />
+    public Task Handle(object message, IMessageProcessingContext context)
+    {
+        var correlations = StateMachine.GetCorrelations(message.GetType());
+        return correlations.OnMissingSaga?.Invoke(message, context)!;
     }
 }

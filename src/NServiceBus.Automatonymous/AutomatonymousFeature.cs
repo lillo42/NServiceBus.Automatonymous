@@ -4,45 +4,44 @@ using Automatonymous;
 using NServiceBus.Features;
 using NServiceBus.ObjectBuilder;
 
-namespace NServiceBus.Automatonymous
+namespace NServiceBus.Automatonymous;
+
+/// <summary>
+/// The Automatonymous <see cref="Feature"/>.
+/// </summary>
+public class AutomatonymousFeature : Feature
 {
     /// <summary>
-    /// The Automatonymous <see cref="Feature"/>.
+    /// Initialize a new <see cref="AutomatonymousFeature" />.
     /// </summary>
-    public class AutomatonymousFeature : Feature
+    public AutomatonymousFeature()
     {
-        /// <summary>
-        /// Initialize a new <see cref="AutomatonymousFeature" />.
-        /// </summary>
-        public AutomatonymousFeature()
-        {
-            EnableByDefault();
-            Prerequisite(config => config.Settings.GetAvailableTypes().Any(IsNServiceBusStateMachine), "No state machine were found in the scanned types");
-        }
-        
-        private static bool IsNServiceBusStateMachine(Type type)
-            => IsCompatible(type, typeof(StateMachine));
-
-        private static bool IsCompatible(Type type, Type source)
-            => source.IsAssignableFrom(type) && type != source && !type.IsAbstract && !type.IsInterface && !type.IsGenericType;
-
-        /// <inheritdoc />
-        protected override void Setup(FeatureConfigurationContext context)
-        {
-            foreach (var stateMachineType in context.Settings.GetAvailableTypes().Where(IsNServiceBusStateMachine))
-            {
-                context.Container.RegisterSingleton(stateMachineType, Activator.CreateInstance(stateMachineType));
-            }
-
-            if (context.Settings.TryGet<string>(ErrorQueueSettings.SettingsKey, out var deadQueue))
-            {
-                DeadQueue = deadQueue;
-            }
-
-            Container = context.Container;
-        }
-
-        internal static string DeadQueue { get; set; } = string.Empty;
-        internal static IConfigureComponents Container { get; private set; } = null!;
+        EnableByDefault();
+        Prerequisite(config => config.Settings.GetAvailableTypes().Any(IsNServiceBusStateMachine), "No state machine were found in the scanned types");
     }
+        
+    private static bool IsNServiceBusStateMachine(Type type)
+        => IsCompatible(type, typeof(StateMachine));
+
+    private static bool IsCompatible(Type type, Type source)
+        => source.IsAssignableFrom(type) && type != source && !type.IsAbstract && !type.IsInterface && !type.IsGenericType;
+
+    /// <inheritdoc />
+    protected override void Setup(FeatureConfigurationContext context)
+    {
+        foreach (var stateMachineType in context.Settings.GetAvailableTypes().Where(IsNServiceBusStateMachine))
+        {
+            context.Container.RegisterSingleton(stateMachineType, Activator.CreateInstance(stateMachineType));
+        }
+
+        if (context.Settings.TryGet<string>(ErrorQueueSettings.SettingsKey, out var deadQueue))
+        {
+            DeadQueue = deadQueue;
+        }
+
+        Container = context.Container;
+    }
+
+    internal static string DeadQueue { get; set; } = string.Empty;
+    internal static IConfigureComponents Container { get; private set; } = null!;
 }

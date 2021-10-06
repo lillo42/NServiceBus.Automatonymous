@@ -1,9 +1,8 @@
 using NServiceBus;
 
-namespace Trashlantis.Contracts
+namespace Trashlantis.Contracts;
+
+public class EmptyTrashBin : IMessage
 {
-    public class EmptyTrashBin : IMessage
-    {
-        public string BinNumber { get; set; } = string.Empty;
-    }
+    public string BinNumber { get; set; } = string.Empty;
 }

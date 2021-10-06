@@ -1,9 +1,8 @@
 using NServiceBus;
 
-namespace SimpleStateMachine
+namespace SimpleStateMachine;
+
+public class CancelOrder : IMessage
 {
-    public class CancelOrder : IMessage
-    {
         
-    }
 }
