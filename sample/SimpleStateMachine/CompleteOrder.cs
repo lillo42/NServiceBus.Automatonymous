@@ -1,10 +1,9 @@
 using System;
 using NServiceBus;
 
-namespace SimpleStateMachine
+namespace SimpleStateMachine;
+
+public class CompleteOrder : IMessage
 {
-    public class CompleteOrder : IMessage
-    {
-        public Guid OrderId { get; set; }
-    }
+    public Guid OrderId { get; set; }
 }

@@ -4,39 +4,38 @@ using Automatonymous;
 using NServiceBus.Automatonymous;
 using Trashlantis.Contracts;
 
-namespace Trashlantis.StateMachines
+namespace Trashlantis.StateMachines;
+
+public class TrashRemovalStateMachine : NServiceBusStateMachine<TrashRemovalState>
 {
-    public class TrashRemovalStateMachine : NServiceBusStateMachine<TrashRemovalState>
+
+    public TrashRemovalStateMachine()
     {
+        InstanceState(x => x.CurrentState, Requested);
 
-        public TrashRemovalStateMachine()
+        Event(() => TrashRemovalRequested, x =>
         {
-            InstanceState(x => x.CurrentState, Requested);
-
-            Event(() => TrashRemovalRequested, x =>
+            x.CorrelateBy(y => y.BinNumber);
+        });
+            
+        Initially(When(TrashRemovalRequested)
+            .Then(x =>
             {
-                x.CorrelateBy(y => y.BinNumber);
-            });
+                x.Instance.BinNumber = x.Data.BinNumber;
+                x.Instance.RequestTimestamp = DateTime.UtcNow;
+            })
+            .Publish(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber })
+            .TransitionTo(Requested)
+        );
             
-            Initially(When(TrashRemovalRequested)
-                .Then(x =>
-                {
-                    x.Instance.BinNumber = x.Data.BinNumber;
-                    x.Instance.RequestTimestamp = DateTime.UtcNow;
-                })
-                .Publish(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber })
-                .TransitionTo(Requested)
-            );
-            
-            During(Requested, When(TrashRemovalRequested)
-                .Publish(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber }));
-        }
-
-        public override Expression<Func<TrashRemovalState, object>> CorrelationByProperty() => x => x.BinNumber;
-
-        public State Requested { get; private set; } = null!;
-        
-        [StartStateMachine]
-        public Event<TakeOutTheTrash> TrashRemovalRequested { get; private set; } = null!;
+        During(Requested, When(TrashRemovalRequested)
+            .Publish(x => new EmptyTrashBin { BinNumber = x.Instance.BinNumber }));
     }
+
+    public override Expression<Func<TrashRemovalState, object>> CorrelationByProperty() => x => x.BinNumber;
+
+    public State Requested { get; private set; } = null!;
+        
+    [StartStateMachine]
+    public Event<TakeOutTheTrash> TrashRemovalRequested { get; private set; } = null!;
 }
