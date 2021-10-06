@@ -106,11 +106,9 @@ namespace NServiceBus.Automatonymous
             var correlateByProperty = GetDefaultCorrelationMessageByProperty<T>();
             if (typeof(T).IsAssignableFrom(typeof(ICorrelatedBy)))
             {
-                correlateByProperty =
-                    (Expression<Func<T, object>>) typeof(NServiceBusStateMachine<TState>).GetMethod(
-                            nameof(CorrelatedByExpression))!
-                        .MakeGenericMethod(typeof(T))
-                        .Invoke(null, null);
+                correlateByProperty = (Expression<Func<T, object>>) typeof(NServiceBusStateMachine<TState>).GetMethod(nameof(CorrelatedByExpression))!
+                    .MakeGenericMethod(typeof(T))
+                    .Invoke(null, null)!;
             }
 
             var configurator = new NServiceBusEventCorrelationConfigurator<TState, T>(correlateByProperty, CorrelationByProperty());
