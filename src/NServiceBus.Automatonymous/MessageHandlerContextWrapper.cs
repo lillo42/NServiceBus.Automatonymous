@@ -1,13 +1,12 @@
-namespace NServiceBus.Automatonymous
+namespace NServiceBus.Automatonymous;
+
+/// <summary>
+/// The <see cref="IMessageHandlerContext"/> wrapper
+/// </summary>
+public class MessageHandlerContextWrapper
 {
     /// <summary>
-    /// The <see cref="IMessageHandlerContext"/> wrapper
+    /// The <see cref="IMessageHandlerContext"/>.
     /// </summary>
-    public class MessageHandlerContextWrapper
-    {
-        /// <summary>
-        /// The <see cref="IMessageHandlerContext"/>.
-        /// </summary>
-        public IMessageHandlerContext? MessageHandlerContext { get; set; }
-    }
+    public IMessageHandlerContext? MessageHandlerContext { get; set; }
 }

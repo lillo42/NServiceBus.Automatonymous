@@ -1,13 +1,12 @@
-namespace NServiceBus.Automatonymous
+namespace NServiceBus.Automatonymous;
+
+/// <summary>
+/// The message headers
+/// </summary>
+public static class MessageHeaders
 {
     /// <summary>
-    /// The message headers
+    /// Scheduling token id.
     /// </summary>
-    public static class MessageHeaders
-    {
-        /// <summary>
-        /// Scheduling token id.
-        /// </summary>
-        public const string SchedulingTokenId = "NSB-Scheduling-TokenId";
-    }
+    public const string SchedulingTokenId = "NSB-Scheduling-TokenId";
 }

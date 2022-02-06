@@ -1,7 +1,6 @@
-namespace NServiceBus.Automatonymous
+namespace NServiceBus.Automatonymous;
+
+internal static class Const
 {
-    internal static class Const
-    {
-        public const string NServiceBusAutomatonymousSourceGeneration = "NServiceBus.Automatonymous.SourceGeneration";
-    }
+    public const string NServiceBusAutomatonymousSourceGeneration = "NServiceBus.Automatonymous.SourceGeneration";
 }
