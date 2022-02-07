@@ -103,8 +103,7 @@ public abstract class BuilderPayloadCacheTest<T>
         _payloadCache.GetOrAddPayload(() => _fixture.Create<T>()).Should().Be(expected);
     }
     #endregion
-        
-        
+
     #region AddOrUpdatePayload
         
     [Fact]
@@ -136,7 +135,6 @@ public abstract class BuilderPayloadCacheTest<T>
             }).Should().Be(expected);
     }
     #endregion
-        
 }
     
 public class StringBuilderPayloadCacheTest : BuilderPayloadCacheTest<string>

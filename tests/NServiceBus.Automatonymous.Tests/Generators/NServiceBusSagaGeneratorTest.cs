@@ -44,7 +44,7 @@ namespace NServiceBus.Automatonymous.Tests
         {
             InstanceState(x => x.CurrentState);
 
-            Initially(When(SubmitOrder)
+            Initially(When(this.SubmitOrder)
                 .Then(context =>
                 {
                     var log = context.GetPayload<ILog>();

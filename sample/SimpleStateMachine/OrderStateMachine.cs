@@ -16,7 +16,7 @@ public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
 
         Event(() => CompleteOrder);
 
-        Initially(When(SubmitOrder)
+        Initially(When(this.SubmitOrder)
             .Then(context =>
             {
                 var log = context.GetPayload<ILog>();
@@ -30,6 +30,11 @@ public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
                     opt.RouteToThisEndpoint();
                 })
             .Then(context => context.GetPayload<ILog>().Info("Requesting a CancelOrder that will be executed in 30 seconds."))
+            .RequestTimeout(_ =>
+            {
+                var a  = new CancelOrder();
+                return a;
+            }, DateTime.UtcNow.AddSeconds(30))
             .RequestTimeout(_ => new CancelOrder(), DateTime.UtcNow.AddSeconds(30))
             .TransitionTo(OrderStarted));
             
