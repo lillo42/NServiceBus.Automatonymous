@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Automatonymous;
-using GreenPipes;
 using GreenPipes.Internals.Extensions;
 using NServiceBus.Automatonymous.Events;
 using NServiceBus.Automatonymous.Events.Imp;
 using NServiceBus.Automatonymous.Extensions;
-using NServiceBus.Automatonymous.Schedules;
-using NServiceBus.Logging;
 
 namespace NServiceBus.Automatonymous;
 
@@ -188,88 +185,4 @@ public abstract class NServiceBusStateMachine<TState> : AutomatonymousStateMachi
 
     internal IEventCorrelation GetCorrelations(Type eventType) 
         => _correlations[_events[eventType]];
-        
-    /// <summary>
-    /// Declares a schedule placeholder that is stored with the state machine instance.
-    /// </summary>
-    /// <typeparam name="TMessage">The request type.</typeparam>
-    /// <param name="propertyExpression">The schedule property on the state machine.</param>
-    /// <param name="tokenIdExpression">The property where the tokenId is stored.</param>
-    /// <param name="configureSchedule">The callback to configure the schedule.</param>
-    protected void Schedule<TMessage>(Expression<Func<Schedule<TState, TMessage>>> propertyExpression,
-        Expression<Func<TState, Guid?>> tokenIdExpression,
-        Action<IScheduleConfigurator<TState, TMessage>>? configureSchedule = null)
-        where TMessage : class, IMessage
-    {
-        var configurator = new StateMachineScheduleConfigurator<TState, TMessage>();
-
-        configureSchedule?.Invoke(configurator);
-
-        Schedule(propertyExpression, tokenIdExpression, configurator.Settings);
-    }
-        
-    /// <summary>
-    /// Declares a schedule placeholder that is stored with the state machine instance.
-    /// </summary>
-    /// <typeparam name="TMessage">The scheduled message type.</typeparam>
-    /// <param name="propertyExpression">The schedule property on the state machine.</param>
-    /// <param name="tokenIdExpression">The property where the tokenId is stored.</param>
-    /// <param name="settings">The request settings (which can be read from configuration, etc.).</param>
-    protected void Schedule<TMessage>(Expression<Func<Schedule<TState, TMessage>>> propertyExpression,
-        Expression<Func<TState, Guid?>> tokenIdExpression,
-        IScheduleSettings<TState, TMessage> settings)
-        where TMessage : class, IMessage
-    {
-        var property = propertyExpression.GetPropertyInfo();
-        var name = property.Name;
-
-        var schedule = new StateMachineSchedule<TState, TMessage>(name, tokenIdExpression, settings);
-
-        InitializeSchedule(this, property, schedule);
-            
-        Event(propertyExpression, x => x.Received);
-        Event(propertyExpression, x => x.AnyReceived, x => settings.Received?.Invoke(x));
-
-        _events[typeof(TMessage)] = schedule.AnyReceived;
-            
-        DuringAny(
-            When(schedule.AnyReceived)
-                .ThenAsync(async context =>
-                {
-                    var tokenId = schedule.GetTokenId(context.Instance);
-                    if (context.TryGetPayload(out IMessageHandlerContext handler))
-                    {
-                        var messageTokenId = handler.GetSchedulingTokenId();
-                        if(messageTokenId.HasValue && (!tokenId.HasValue || messageTokenId.Value != tokenId.Value))
-                        {
-                            context.GetPayload<ILog>()
-                                .DebugFormat("SAGA: {0} Scheduled message not current: {1}", handler.MessageHeaders[Headers.SagaId], messageTokenId.Value);
-                            return;
-                        }
-                    }
-
-                    var eventContext = context.GetProxy(schedule.Received, context.Data);
-                    await ((StateMachine<TState>)this).RaiseEvent(eventContext).ConfigureAwait(false);
-                    if (schedule.GetTokenId(context.Instance) == tokenId)
-                    {
-                        schedule.SetTokenId(context.Instance, default);
-                    }
-                }));
-            
-        static void InitializeSchedule(NServiceBusStateMachine<TState> stateMachine, PropertyInfo property, Schedule<TState, TMessage> schedule)
-        {
-            if (property.CanWrite)
-            {
-                property.SetValue(stateMachine, schedule);
-            }
-            else if (ConfigurationHelpers.TryGetBackingField(stateMachine.GetType().GetTypeInfo(), property, out var backingField))
-            {
-                backingField.SetValue(stateMachine, schedule);
-            }
-            else
-            {
-                throw new ArgumentException($"The schedule property is not writable: {property.Name}");
-            }
-        }
-    }
 }

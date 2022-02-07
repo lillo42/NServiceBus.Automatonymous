@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NServiceBus.Automatonymous;
 
 /// <summary>
@@ -23,6 +25,7 @@ public interface ICorrelatedBy
 /// </remarks>
 public interface ICorrelatedBy<out TKey> : ICorrelatedBy
 {
+    [ExcludeFromCodeCoverage]
     object? ICorrelatedBy.CorrelationId => CorrelationId;
         
     /// <summary>

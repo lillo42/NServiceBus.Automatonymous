@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Automatonymous;
-using NServiceBus.Automatonymous.Schedules;
 using NServiceBus.Features;
 using NServiceBus.ObjectBuilder;
 
@@ -31,10 +30,7 @@ public class AutomatonymousFeature : Feature
     protected override void Setup(FeatureConfigurationContext context)
     {
         context.Container.ConfigureComponent<MessageHandlerContextWrapper>(DependencyLifecycle.InstancePerUnitOfWork);
-        context.Container.ConfigureComponent<DefaultMessageSchedulerContext>(DependencyLifecycle.InstancePerCall);
-        context.Container.ConfigureComponent<IMessageScheduler>(provider => provider.Build<DefaultMessageSchedulerContext>(), DependencyLifecycle.InstancePerCall);
-        context.Container.ConfigureComponent<MessageSchedulerContext>(provider => provider.Build<DefaultMessageSchedulerContext>(), DependencyLifecycle.InstancePerCall);
-            
+
         foreach (var stateMachineType in context.Settings.GetAvailableTypes().Where(IsNServiceBusStateMachine))
         {
             context.Container.RegisterSingleton(stateMachineType, Activator.CreateInstance(stateMachineType));

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -56,6 +57,21 @@ internal class StateMachineReceiver : ISyntaxContextReceiver
 
         return false;
     }
+
+    private static ISymbol GetStateSymbol(GeneratorSyntaxContext context, ClassDeclarationSyntax @class)
+    {
+        var baseSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.NServiceBusStateMachine`1")!;
+        foreach (var baseTypeSyntax in @class.BaseList?.Types!)
+        {
+            if (context.SemanticModel.GetSymbolInfo(baseTypeSyntax.Type).Symbol is INamedTypeSymbol candidate
+                && (baseSymbol.Equals(candidate, SymbolEqualityComparer.Default) || baseSymbol.Equals(candidate.ConstructedFrom, SymbolEqualityComparer.Default)))
+            {
+                return context.SemanticModel.GetSymbolInfo(((GenericNameSyntax)baseTypeSyntax.Type).TypeArgumentList.Arguments[0]).Symbol!;
+            }
+        }
+
+        throw new InvalidOperationException();
+    }
     
     public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
     {
@@ -63,7 +79,7 @@ internal class StateMachineReceiver : ISyntaxContextReceiver
         {
             if (IsSaga(context, classDeclarationSyntax))
             {
-                _saga = new SagaInformation(classDeclarationSyntax, context.SemanticModel.GetSymbolInfo(classDeclarationSyntax).Symbol!);
+                _saga = new SagaInformation(classDeclarationSyntax, GetStateSymbol(context, @classDeclarationSyntax));
                 Sagas.Add(_saga);
             }
             else
@@ -93,7 +109,7 @@ internal class StateMachineReceiver : ISyntaxContextReceiver
                         {
                             return;
                         }
-                        var symbol = context.SemanticModel.GetSymbolInfo(property.DescendantNodes().OfType<GenericNameSyntax>().First()).Symbol;
+                        var symbol = context.SemanticModel.GetSymbolInfo(property.DescendantNodes().OfType<GenericNameSyntax>().First().TypeArgumentList.Arguments[0]).Symbol;
                         if (_propertyType == PropertyType.StartAt)
                         {
                             _saga.StartBy.Add(((property as PropertyDeclarationSyntax)!, symbol!));
@@ -135,7 +151,7 @@ internal class StateMachineReceiver : ISyntaxContextReceiver
                         && type.Value.Type!.Equals(context.SemanticModel.GetTypeInfo(genericNameSyntax.TypeArgumentList.Arguments[0]).Type, SymbolEqualityComparer.Default));
                     if (property != null)
                     {
-                        var symbol = context.SemanticModel.GetSymbolInfo(property.DescendantNodes().OfType<GenericNameSyntax>().First()).Symbol;
+                        var symbol = context.SemanticModel.GetSymbolInfo(property.DescendantNodes().OfType<GenericNameSyntax>().First().TypeArgumentList.Arguments[0]).Symbol;
                         _saga.RequestTimeout.Add(((property as PropertyDeclarationSyntax)!, symbol!));
                         _propertyType = null;
                     }

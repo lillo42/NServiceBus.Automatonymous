@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace NServiceBus.Automatonymous;
 
 /// <summary>
 /// The <see cref="IMessageHandlerContext"/> wrapper
 /// </summary>
+[ExcludeFromCodeCoverage] 
 public class MessageHandlerContextWrapper
 {
     /// <summary>
