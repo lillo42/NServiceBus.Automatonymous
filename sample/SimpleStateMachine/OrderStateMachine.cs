@@ -52,11 +52,9 @@ public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
         
 #nullable disable
     public State OrderStarted { get; private set; } = null;
-        
-    [StartStateMachine]
+    
     public Event<StartOrder> SubmitOrder { get; private set; } = null;
-        
-    [TimeoutEvent]
+    
     public Event<CancelOrder> CancelOrder { get; private set; } = null;
     public Event<CompleteOrder> CompleteOrder { get; private set; } = null;
 

@@ -35,15 +35,9 @@ public class AutomatonymousFeature : Feature
         {
             context.Container.RegisterSingleton(stateMachineType, Activator.CreateInstance(stateMachineType));
         }
-
-        if (context.Settings.TryGet<string>(ErrorQueueSettings.SettingsKey, out var deadQueue))
-        {
-            DeadQueue = deadQueue;
-        }
-
+        
         Container = context.Container;
     }
 
-    internal static string DeadQueue { get; set; } = string.Empty;
-    internal static IConfigureComponents Container { get; private set; } = null!;
+    internal static IConfigureComponents Container { get; set; } = null!;
 }

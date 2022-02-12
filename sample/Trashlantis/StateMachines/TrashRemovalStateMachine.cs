@@ -34,7 +34,6 @@ public class TrashRemovalStateMachine : NServiceBusStateMachine<TrashRemovalStat
     public override Expression<Func<TrashRemovalState, object>> CorrelationByProperty() => x => x.BinNumber;
 
     public State Requested { get; private set; } = null!;
-        
-    [StartStateMachine]
+    
     public Event<TakeOutTheTrash> TrashRemovalRequested { get; private set; } = null!;
 }

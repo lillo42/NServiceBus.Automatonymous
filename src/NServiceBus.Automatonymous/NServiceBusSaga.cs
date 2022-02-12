@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Automatonymous;
 using GreenPipes.Payloads;
+using NServiceBus.Automatonymous.Events;
 using NServiceBus.Logging;
 using NServiceBus.ObjectBuilder;
 using NServiceBus.Sagas;
@@ -23,7 +25,7 @@ public abstract class NServiceBusSaga<TStateMachine, TState> : Saga<TState>, IHa
     /// <summary>
     /// The <typeparamref name="TStateMachine" />.
     /// </summary>
-    protected TStateMachine StateMachine { get; }
+    protected internal TStateMachine StateMachine { get; }
     private readonly IBuilder _builder;
         
     /// <summary>
@@ -76,7 +78,17 @@ public abstract class NServiceBusSaga<TStateMachine, TState> : Saga<TState>, IHa
     /// <inheritdoc />
     public Task Handle(object message, IMessageProcessingContext context)
     {
-        var correlations = StateMachine.GetCorrelations(message.GetType());
-        return correlations.OnMissingSaga?.Invoke(message, context) ?? Task.CompletedTask;
+        var messageType = message.GetType();
+        if (StateMachine.TryGetCorrelations(messageType, out var correlation))
+        {
+            return correlation.OnMissingSaga?.Invoke(message, context) ?? Task.CompletedTask;
+        }
+
+        if (messageType.GetInterfaces().Any(@interface => StateMachine.TryGetCorrelations(@interface, out correlation)))
+        {
+            return correlation!.OnMissingSaga?.Invoke(message, context) ?? Task.CompletedTask;
+        }
+        
+        return Task.CompletedTask;
     }
 }

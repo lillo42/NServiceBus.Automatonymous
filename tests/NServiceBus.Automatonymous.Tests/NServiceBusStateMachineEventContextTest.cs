@@ -60,7 +60,6 @@ public class NServiceBusStateMachineEventContextTest
                 When(PissOff)
                     .TransitionTo(Enemy),
                 When(Introduce)
-                    .Schedule(OrderCompletionTimeout, context => new OrderCompleted(), DateTime.UtcNow)
                     .Then(ctx => ctx.Instance.Name = ctx.Data.Name)
                     .TransitionTo(Friend)
             );
@@ -72,9 +71,6 @@ public class NServiceBusStateMachineEventContextTest
         public Event Hello { get; private set; } = null!;
         public Event PissOff { get; private set; } = null!;
         public Event<Person> Introduce { get; private set; } = null!;
-
-        public Schedule<Relationship, OrderCompleted> OrderCompletionTimeout { get; private set; } = null!; 
-
         public override Expression<Func<Relationship, object>> CorrelationByProperty() => x => x.Id;
     }
         

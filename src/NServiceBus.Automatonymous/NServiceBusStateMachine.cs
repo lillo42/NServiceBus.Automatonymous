@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using Automatonymous;
@@ -14,6 +15,7 @@ namespace NServiceBus.Automatonymous;
 /// The base <see cref="AutomatonymousStateMachine{TInstance}"/>.
 /// </summary>
 /// <typeparam name="TState">The saga data.</typeparam>
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.All)]
 public abstract class NServiceBusStateMachine<TState> : AutomatonymousStateMachine<TState>
     where TState : class, IContainSagaData, new()
 {
@@ -131,9 +133,10 @@ public abstract class NServiceBusStateMachine<TState> : AutomatonymousStateMachi
         Action<IEventCorrelationConfigurator<TState, T>>? configureEventCorrelation)
     {
         var correlateByProperty = GetDefaultCorrelationMessageByProperty<T>();
-        if (typeof(T).IsAssignableFrom(typeof(ICorrelatedBy)))
+        if (typeof(T).HasInterface(typeof(ICorrelatedBy)))
         {
-            correlateByProperty = (Expression<Func<T, object>>) typeof(NServiceBusStateMachine<TState>).GetMethod(nameof(CorrelatedByExpression))!
+            correlateByProperty = (Expression<Func<T, object>>) typeof(NServiceBusStateMachine<TState>)
+                .GetMethod(nameof(CorrelatedByExpression), BindingFlags.NonPublic | BindingFlags.Static)!
                 .MakeGenericMethod(typeof(T))
                 .Invoke(null, null)!;
         }
@@ -183,6 +186,9 @@ public abstract class NServiceBusStateMachine<TState> : AutomatonymousStateMachi
         return correlationProperty != null ? correlationProperty : null;
     }
 
-    internal IEventCorrelation GetCorrelations(Type eventType) 
-        => _correlations[_events[eventType]];
+    internal bool TryGetCorrelations(Type eventType, [NotNullWhen(true)] out IEventCorrelation? correlation)
+    {
+        correlation = null;
+        return _events.TryGetValue(eventType, out var @event) && _correlations.TryGetValue(@event, out correlation);
+    }
 }

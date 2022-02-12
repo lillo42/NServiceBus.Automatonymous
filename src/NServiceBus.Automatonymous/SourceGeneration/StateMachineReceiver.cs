@@ -43,7 +43,7 @@ internal class StateMachineReceiver : ISyntaxContextReceiver
         => ExtendFrom(context, @class,
             context.SemanticModel.Compilation.GetTypeByMetadataName("NServiceBus.Automatonymous.NServiceBusStateMachine`1")!);
 
-    private static bool IsInitially(SyntaxNode node)
+    private static bool IsInitially(SyntaxNode? node)
     {
         while (node != null && node is not ConstructorDeclarationSyntax)
         {

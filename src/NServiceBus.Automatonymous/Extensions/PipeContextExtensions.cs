@@ -1,7 +1,8 @@
 using System;
 using GreenPipes;
 
-namespace NServiceBus.Automatonymous.Extensions;
+// ReSharper disable once CheckNamespace
+namespace NServiceBus.Automatonymous;
 
 /// <summary>
 /// Pipe context

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using NServiceBus.Automatonymous.Exceptions;
+using NServiceBus.Settings;
 
 namespace NServiceBus.Automatonymous.Events;
 
@@ -17,20 +18,20 @@ public class EventMissingInstanceConfigurator<TState , TMessage> : IMissingInsta
     /// <inheritdoc />
     public void Discard()
     {
-        _action = (message, context) => Task.CompletedTask;
+        _action = (_, _) => Task.CompletedTask;
     }
 
     /// <inheritdoc />
     public void Fault()
     {
-        _action = (message, context) =>
+        _action = (_, context) =>
         {
-            if (string.IsNullOrEmpty(AutomatonymousFeature.DeadQueue))
+            if (!context.Extensions.Get<ReadOnlySettings>().TryGet<string>(ErrorQueueSettings.SettingsKey, out var value))
             {
                 throw new DeadQueueNotSetupException();
             }
                 
-            return context.ForwardCurrentMessageTo(AutomatonymousFeature.DeadQueue);
+            return context.ForwardCurrentMessageTo(value);
         };
     }
 
