@@ -85,7 +85,6 @@ public interface IEventCorrelation
     /// </summary>
     Func<object, IMessageProcessingContext, Task>? OnMissingSaga { get; }
 
-
     /// <summary>
     /// Execute the configured map.
     /// </summary>

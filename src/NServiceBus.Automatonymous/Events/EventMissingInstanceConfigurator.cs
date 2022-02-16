@@ -16,14 +16,11 @@ public class EventMissingInstanceConfigurator<TState , TMessage> : IMissingInsta
     private Func<TMessage, IMessageProcessingContext, Task>? _action;
         
     /// <inheritdoc />
-    public void Discard()
-    {
-        _action = (_, _) => Task.CompletedTask;
-    }
+    public void Discard() 
+        => _action = (_, _) => Task.CompletedTask;
 
     /// <inheritdoc />
-    public void Fault()
-    {
+    public void Fault() =>
         _action = (_, context) =>
         {
             if (!context.Extensions.Get<ReadOnlySettings>().TryGet<string>(ErrorQueueSettings.SettingsKey, out var value))
@@ -33,23 +30,18 @@ public class EventMissingInstanceConfigurator<TState , TMessage> : IMissingInsta
                 
             return context.ForwardCurrentMessageTo(value);
         };
-    }
 
     /// <inheritdoc />
-    public void ExecuteAsync(Func<TMessage, IMessageProcessingContext, Task> action)
-    {
-        _action = action;
-    }
+    public void ExecuteAsync(Func<TMessage, IMessageProcessingContext, Task> action) 
+        => _action = action;
 
     /// <inheritdoc />
-    public void Execute(Action<TMessage, IMessageProcessingContext> action)
-    {
+    public void Execute(Action<TMessage, IMessageProcessingContext> action) =>
         _action = (message, context) =>
         {
             action(message, context);
             return Task.CompletedTask;
         };
-    }
 
     /// <summary>
     /// The <see cref="Func{T1,T2,TResult}"/> to be executed when saga is missing.

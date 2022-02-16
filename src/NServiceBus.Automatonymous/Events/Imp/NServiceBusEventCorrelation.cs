@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace NServiceBus.Automatonymous.Events.Imp;
 /// </summary>
 /// <typeparam name="TState">The state machine data.</typeparam>
 /// <typeparam name="TMessage">The message.</typeparam>
-public class NServiceBusEventCorrelation <TState, TMessage> : IEventCorrelation<TState, TMessage>
+public class NServiceBusEventCorrelation<TState, TMessage> : IEventCorrelation<TState, TMessage>
     where TState : class, IContainSagaData
 {
     /// <summary>

@@ -12,6 +12,7 @@ public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
 {
     public OrderStateMachine()
     {
+#nullable disable
         InstanceState(x => x.CurrentState);
 
         Event(() => CompleteOrder);
@@ -26,15 +27,10 @@ public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
             .Send(context => new CompleteOrder { OrderId = context.Instance.OrderId },
                 (_, opt) =>
                 {
-                    opt.DelayDeliveryWith(TimeSpan.FromSeconds(50));
+                    opt.DelayDeliveryWith(TimeSpan.FromSeconds(10));
                     opt.RouteToThisEndpoint();
                 })
             .Then(context => context.GetPayload<ILog>().Info("Requesting a CancelOrder that will be executed in 30 seconds."))
-            .RequestTimeout(_ =>
-            {
-                var a  = new CancelOrder();
-                return a;
-            }, DateTime.UtcNow.AddSeconds(30))
             .RequestTimeout(_ => new CancelOrder(), DateTime.UtcNow.AddSeconds(30))
             .TransitionTo(OrderStarted));
             
@@ -50,12 +46,12 @@ public sealed class OrderStateMachine : NServiceBusStateMachine<OrderState>
     public override Expression<Func<OrderState, object>> CorrelationByProperty() => x => x.OrderId;
     protected override string DefaultCorrelationMessageByPropertyName => "OrderId";
         
-#nullable disable
+
     public State OrderStarted { get; private set; } = null;
     
     public Event<StartOrder> SubmitOrder { get; private set; } = null;
     
     public Event<CancelOrder> CancelOrder { get; private set; } = null;
     public Event<CompleteOrder> CompleteOrder { get; private set; } = null;
-
+#nullable restore
 }

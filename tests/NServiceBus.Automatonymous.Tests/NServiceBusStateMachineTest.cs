@@ -26,16 +26,16 @@ public class NServiceBusStateMachineTest
     
     public class SimpleSagaData : ContainSagaData
     {
-        public Guid Id { get; set; }
         public Guid OrderId { get; set; }
     }
     
     public sealed class SimpleStateMachine : NServiceBusStateMachine<SimpleSagaData>
     {
+#nullable disable
         public SimpleStateMachine()
         {
             Event(() => Explicit);
-            Event(() => CorrelatedBy);
+            Event(() => CorrelatedBy!);
             
             Event(() => CorrelatedByOrderId, opt => opt
                 .CorrelateBy(x => x.OrderId)
@@ -47,7 +47,7 @@ public class NServiceBusStateMachineTest
                 .OnMissingSaga(x => x.Discard()));
         }
         
-#nullable disable
+
         public State SampleState { get; private set; } = null;
         public State<string> SampleGenericState { get; private set; } = null;
         public Event<IRegisterEventExplicit> Explicit { get; private set; } = null;
